@@ -78,6 +78,7 @@ class Apartment(db.Model):
     city = db.Column(db.String(100), nullable=False)
     amenities = db.Column(db.Text) 
     landlord_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    description = db.Column(db.String(255), nullable=False)
 
     landlord = db.relationship('User', backref='apartments')
 
