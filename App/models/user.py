@@ -88,7 +88,8 @@ class Apartment(db.Model):
             'address': self.address,
             'city': self.city,
             'amenities': self.amenities.split(',') if self.amenities else [],
-            'landlord': self.landlord.username
+            'landlord': self.landlord.username,
+            'description': self.description
         }
 
     def __init__(self, address, city, state, zipcode, amenities, landlord_id):
