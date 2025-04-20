@@ -1,5 +1,6 @@
 from werkzeug.security import check_password_hash, generate_password_hash
 from App.database import db
+from App.models.listing import Listing  # Import the Apartment model
 
 
 class User(db.Model):
@@ -25,6 +26,7 @@ class User(db.Model):
         self.email = email
         self.role = role
         self.set_password(password)
+
     def get_json(self):
         return {
             'id': self.id,
@@ -37,3 +39,11 @@ class User(db.Model):
         self.password = generate_password_hash(password) 
     def check_password(self, password):
         return check_password_hash(self.password, password) 
+    
+    def search_listings(self, term):
+        return Listing.query.filter(
+            (Listing.title.ilike(f'%{term}%')) |
+            (Listing.description.ilike(f'%{term}%'))
+        ).all()
+
+   
