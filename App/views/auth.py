@@ -107,6 +107,15 @@ def my_properties_page(id):
     user = User.query.get(user_id)   
     return render_template('myproperties.html', user=user, id=id)
 
+@auth_views.route('/search', methods=['GET'])
+@jwt_required()
+def search_page():
+    user_id = get_jwt_identity() 
+    user = User.query.get(user_id)   
+    search_term = request.args.get('query')
+    results = user.search_listings(search_term)
+    return render_template('search.html', user=user, results=results)
+
 '''
 API Routes
 '''
