@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Apartment Rating - Listings</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap" rel="stylesheet">
+  <!-- Materialize CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f4f9fc;
+      color: #333;
+    }
+
+    header {
+      background-color: #1976d2;
+      padding: 20px 0;
+      color: white;
+      text-align: center;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .collection-item {
+      padding: 15px;
+    }
+
+    .card-panel {
+      border-radius: 10px;
+      background: #e3f2fd;
+    }
+
+    .input-field input {
+      margin-bottom: 10px;
+    }
+
+    .btn.blue {
+      width: 100%;
+    }
+
+    img {
+      border-radius: 8px;
+      margin-top: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .apartment-price {
+      font-weight: bold;
+      color: #1565c0;
+      font-size: 1.1em;
+    }
+
+    .apartment-section h5 {
+      border-bottom: 2px solid #90caf9;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 768px) {
+      .col.s3, .col.s6 {
+        width: 100%;
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h4>🏢 Apartment Rating</h4>
+    <p>Find and review the best places to live</p>
+  </header>
+
+  <div class="container">
+    <div class="row" style="margin-top: 20px;">
+      
+      <!-- Left Column: List of Apartments -->
+      <div class="col s12 m3 apartment-section">
+        <h5>Apartments</h5>
+        <ul class="collection z-depth-1">
+          {% if apartments %}
+            {% for apt in apartments %}
+              <li class="collection-item">
+                <strong>{{ apt.title }}</strong><br>
+                <span class="grey-text">{{ apt.location }}</span><br>
+                <span class="apartment-price">${{ apt.price }}</span><br>
+                <a href="{{ url_for('listings_bp.view_listing', apt_id=apt.id) }}"
+                   class="blue-text text-darken-2"
+                   style="font-weight: bold;">
+                  View
+                </a>
+              </li>
+            {% endfor %}
+          {% else %}
+            <li class="collection-item">No apartments found.</li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <!-- Middle Column: Selected Apartment Details -->
+      <div class="col s12 m6 apartment-section">
+        {% if selected_apartment %}
+          <h5>{{ selected_apartment.title }}</h5>
+          <p><strong>Location:</strong> {{ selected_apartment.location }}</p>
+          <p class="apartment-price"><strong>Price:</strong> ${{ selected_apartment.price }}</p>
+          <p>{{ selected_apartment.details or selected_apartment.description }}</p>
+          {% if selected_apartment.image_url %}
+            <img src="{{ selected_apartment.image_url }}" alt="Apartment Image" style="max-width: 100%;">
+          {% endif %}
+        {% else %}
+          <h5>Select an apartment to view details</h5>
+        {% endif %}
+      </div>
+
+      <!-- Right Column: Reviews + Add New Review -->
+      <div class="col s12 m3 apartment-section">
+        <h5>Reviews</h5>
+        {% if selected_apartment and selected_apartment.reviews %}
+          {% for review in selected_apartment.reviews %}
+            <div class="card-panel z-depth-1" style="margin-bottom: 10px;">
+              <p>"{{ review.comment }}"</p>
+              <span class="right grey-text">{{ review.rating }}/5</span>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>No reviews for this apartment yet.</p>
+        {% endif %}
+
+        <!-- Add Review -->
+        {% if selected_apartment %}
+        <form method="POST" action="{{ url_for('listings_bp.add_review', apt_id=selected_apartment.id) }}" style="margin-top: 20px;">
+          <div class="input-field">
+            <input type="text" name="comment" placeholder="Enter your review" required>
+          </div>
+          <div class="input-field">
+            <input type="number" name="rating" placeholder="Rating (1-5)" min="1" max="5" required>
+          </div>
+          <button class="btn blue">Add Review</button>
+        </form>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Materialize JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
