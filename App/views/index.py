@@ -7,7 +7,7 @@ from App.database import db
 from App.controllers import (
     initialize
 )
-from App.models import Listing, Landlord, User
+from App.models import Listing, Landlord, User, Location
 from App.models.review import Review
 from App.models.Amenities import Amenities
 from App.models.ListingAmenity import ListingAmenity
@@ -16,47 +16,16 @@ index_views = Blueprint('index_views', __name__, template_folder='../templates')
 
 @index_views.route('/', methods=['GET'])
 def index_page():
-
-    properties = [
-        {
-            'id': 1,
-            'title': 'Cozy Apartment',
-            'location': 'Downtown',
-            'image_url': 'https://picsum.photos/id/1015/800/600',
-            'description': 'A cozy apartment in the heart of the city, perfect for young professionals.'
-        },
-        {
-            'id': 2,
-            'title': 'Luxury Condo',
-            'location': 'Uptown',
-            'image_url': 'https://picsum.photos/id/1025/800/600',
-            'description': 'Modern condo with high-end finishes and a great view of the city skyline.'
-        },
-        {
-            'id': 3,
-            'title': 'Suburban House',
-            'location': 'Suburbs',
-            'image_url': 'https://picsum.photos/id/1035/800/600',
-            'description': 'A spacious house in a quiet neighborhood with a big backyard.'
-        },
-        {
-            'id': 4,
-            'title': 'Modern Loft',
-            'location': 'Midtown',
-            'image_url': 'https://picsum.photos/id/1045/800/600',
-            'description': 'A trendy loft with an open floor plan and lots of natural light.'
-        },
-        {
-            'id': 5,
-            'title': 'Charming Studio',
-            'location': 'Old Town',
-            'image_url': 'https://picsum.photos/id/1055/800/600',
-            'description': 'A compact and charming studio, ideal for students and singles.'
-        }
-    ]
-    
+    # Get real properties from the database instead of hardcoded ones
     filter_type = request.args.get('filter', 'all')
-    # Not filtering dummy data; just passing all properties.
+    
+    # Fetch properties from the database
+    if filter_type == 'all':
+        properties = Listing.query.all()
+    else:
+        # Add more filter logic here if needed
+        properties = Listing.query.all()
+    
     return render_template('home.html', properties=properties)
 
 
@@ -242,3 +211,96 @@ def seed_amenities():
 def get_amenities():
     amenities = Amenities.query.all()
     return jsonify([amenity.get_json() for amenity in amenities])
+
+@index_views.route('/search', methods=['GET'])
+def search_listings():
+    # Get search parameters
+    query = request.args.get('query', '')
+    bedrooms = request.args.get('bedrooms')
+    bathrooms = request.args.get('bathrooms')
+    min_price = request.args.get('min_price')
+    max_price = request.args.get('max_price')
+    amenities = request.args.getlist('amenities')
+    
+    # Start with all listings
+    listings_query = Listing.query
+    
+    # Apply filters based on parameters
+    if query:
+        # Search in title, description, and location fields
+        listings_query = listings_query.join(Listing.location).filter(
+            db.or_(
+                Listing.title.ilike(f'%{query}%'),
+                Listing.description.ilike(f'%{query}%'),
+                Location.street.ilike(f'%{query}%'),
+                Location.city.ilike(f'%{query}%'),
+                Location.state.ilike(f'%{query}%'),
+                Location.zip_code.ilike(f'%{query}%')
+            )
+        )
+    
+    # Filter by bedrooms if specified
+    if bedrooms:
+        try:
+            bedrooms = int(bedrooms)
+            listings_query = listings_query.filter(Listing.bedrooms >= bedrooms)
+        except (ValueError, TypeError):
+            pass
+    
+    # Filter by bathrooms if specified
+    if bathrooms:
+        try:
+            bathrooms = float(bathrooms)
+            listings_query = listings_query.filter(Listing.bathrooms >= bathrooms)
+        except (ValueError, TypeError):
+            pass
+    
+    # Filter by price range if specified
+    if min_price:
+        try:
+            min_price = float(min_price)
+            listings_query = listings_query.filter(Listing.price >= min_price)
+        except (ValueError, TypeError):
+            pass
+    
+    if max_price:
+        try:
+            max_price = float(max_price)
+            listings_query = listings_query.filter(Listing.price <= max_price)
+        except (ValueError, TypeError):
+            pass
+    
+    # Filter by amenities if specified
+    if amenities:
+        for amenity_id in amenities:
+            try:
+                amenity_id = int(amenity_id)
+                # Join with ListingAmenity for each amenity
+                listings_query = listings_query.join(
+                    ListingAmenity, 
+                    db.and_(
+                        ListingAmenity.listing_id == Listing.id,
+                        ListingAmenity.amenity_id == amenity_id
+                    )
+                )
+            except (ValueError, TypeError):
+                pass
+    
+    # Execute the query
+    listings = listings_query.all()
+    
+    # Get all amenities for the advanced search form
+    all_amenities = Amenities.query.all()
+    
+    # Render the search results template
+    return render_template(
+        'search_results.html', 
+        listings=listings, 
+        query=query,
+        bedrooms=bedrooms,
+        bathrooms=bathrooms,
+        min_price=min_price,
+        max_price=max_price,
+        selected_amenities=amenities,
+        all_amenities=all_amenities
+    )

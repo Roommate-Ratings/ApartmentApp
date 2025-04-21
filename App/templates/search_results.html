@@ -1,0 +1,156 @@
+{% extends "layout.html" %}
+{% block title %}Search Results{% endblock %}
+{% block page %}Search Results{% endblock %}
+
+{% block content %}
+<div class="row" style="margin-top: 20px;">
+  <!-- Advanced Search Form -->
+  <div class="col s12 m4 l3">
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title purple-text">Advanced Search</span>
+        
+        <form action="{{ url_for('index_views.search_listings') }}" method="GET">
+          <!-- Text Search -->
+          <div class="input-field">
+            <i class="material-icons prefix">search</i>
+            <input type="text" id="query" name="query" value="{{ query }}" class="validate">
+            <label for="query" {% if query %}class="active"{% endif %}>Search Term</label>
+          </div>
+          
+          <!-- Price Range -->
+          <div class="row" style="margin-bottom: 0;">
+            <div class="input-field col s6">
+              <input type="number" id="min_price" name="min_price" value="{{ min_price }}" min="0" step="10">
+              <label for="min_price" {% if min_price %}class="active"{% endif %}>Min Price</label>
+            </div>
+            <div class="input-field col s6">
+              <input type="number" id="max_price" name="max_price" value="{{ max_price }}" min="0" step="10">
+              <label for="max_price" {% if max_price %}class="active"{% endif %}>Max Price</label>
+            </div>
+          </div>
+          
+          <!-- Bedroom & Bathroom Filters -->
+          <div class="row" style="margin-bottom: 0;">
+            <div class="input-field col s6">
+              <select id="bedrooms" name="bedrooms" title="Select number of bedrooms">
+                <option value="" {% if not bedrooms %}selected{% endif %}>Any</option>
+                <option value="1" {% if bedrooms == '1' %}selected{% endif %}>1+ Bed</option>
+                <option value="2" {% if bedrooms == '2' %}selected{% endif %}>2+ Beds</option>
+                <option value="3" {% if bedrooms == '3' %}selected{% endif %}>3+ Beds</option>
+                <option value="4" {% if bedrooms == '4' %}selected{% endif %}>4+ Beds</option>
+              </select>
+              <label for="bedrooms">Bedrooms</label>
+            </div>
+            <div class="input-field col s6">
+              <select id="bathrooms" name="bathrooms" title="Select number of bathrooms">
+                <option value="" {% if not bathrooms %}selected{% endif %}>Any</option>
+                <option value="1" {% if bathrooms == '1' %}selected{% endif %}>1+ Bath</option>
+                <option value="1.5" {% if bathrooms == '1.5' %}selected{% endif %}>1.5+ Baths</option>
+                <option value="2" {% if bathrooms == '2' %}selected{% endif %}>2+ Baths</option>
+                <option value="3" {% if bathrooms == '3' %}selected{% endif %}>3+ Baths</option>
+              </select>
+              <label for="bathrooms">Bathrooms</label>
+            </div>
+          </div>
+          
+          <!-- Amenities -->
+          <p class="grey-text">Amenities</p>
+          <div style="max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 15px;">
+            {% for amenity in all_amenities %}
+            <p>
+              <label>
+                <input type="checkbox" name="amenities" value="{{ amenity.id }}" 
+                  {% if selected_amenities and amenity.id|string in selected_amenities %}checked{% endif %} 
+                  class="filled-in">
+                <span>{{ amenity.name }}</span>
+              </label>
+            </p>
+            {% endfor %}
+          </div>
+          
+          <!-- Submit Button -->
+          <button class="btn purple waves-effect waves-light" type="submit" style="width: 100%;">
+            <i class="material-icons left">search</i>Search
+          </button>
+          
+          <!-- Reset Button -->
+          <a href="{{ url_for('index_views.search_listings') }}" class="btn-flat waves-effect" style="width: 100%; text-align: center; margin-top: 10px;">
+            Clear Filters
+          </a>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Search Results -->
+  <div class="col s12 m8 l9">
+    <h5>
+      {% if query %}
+        Search Results for "{{ query }}"
+      {% else %}
+        All Properties
+      {% endif %}
+      <span class="grey-text text-darken-1" style="font-size: 0.9em; font-weight: normal; margin-left: 10px;">
+        {{ listings|length }} result{% if listings|length != 1 %}s{% endif %} found
+      </span>
+    </h5>
+    
+    <div class="divider" style="margin-bottom: 20px;"></div>
+    
+    {% if listings %}
+      <div class="row">
+        {% for listing in listings %}
+          <div class="col s12 m6 l4">
+            <div class="card hoverable">
+              <div class="card-image">
+                {% if listing.image_url %}
+                  <img src="{{ listing.image_url }}" alt="{{ listing.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                  <img src="https://via.placeholder.com/300x200?text=No+Image" alt="No Image" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <span class="card-title" style="background-color: rgba(0,0,0,0.5); width: 100%; padding: 8px; font-size: 1.2rem;">${{ "%.0f"|format(listing.price) }}/mo</span>
+              </div>
+              <div class="card-content" style="min-height: 150px;">
+                <span class="card-title truncate" style="margin-bottom: 10px; font-size: 1.2rem;">{{ listing.title }}</span>
+                <p class="truncate grey-text text-darken-1">
+                  {{ listing.location.street }}, {{ listing.location.city }}
+                </p>
+                <div style="margin-top: 10px;">
+                  <span class="chip">{{ listing.bedrooms }} bed{% if listing.bedrooms != 1 %}s{% endif %}</span>
+                  <span class="chip">{{ listing.bathrooms }} bath{% if listing.bathrooms != 1 %}s{% endif %}</span>
+                </div>
+                {% if listing.amenities.count() > 0 %}
+                  <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                    <i class="tiny material-icons left">check_circle</i>
+                    {{ listing.amenities.count() }} amenities
+                  </div>
+                {% endif %}
+              </div>
+              <div class="card-action">
+                <a href="{{ url_for('index_views.get_listing_page', apt_id=listing.id) }}" class="purple-text">View Details</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="card-panel grey lighten-4">
+        <div class="center-align" style="padding: 20px;">
+          <i class="material-icons large grey-text">search_off</i>
+          <h5 class="grey-text text-darken-1">No properties found matching your criteria</h5>
+          <p>Try adjusting your search filters for more results.</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize select elements
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems, {});
+  });
+</script>
+{% endblock %} 
