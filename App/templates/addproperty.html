@@ -11,12 +11,12 @@
         <div class="card-content">
           <div class="row" style="margin-bottom: 0;">
             <div class="col s12 m8">
-              <span class="card-title purple-text text-darken-1" style="font-weight: bold; font-size: 24px;">
+              <span class="card-title blue-grey-text text-darken-1" style="font-weight: bold; font-size: 24px;">
                 <i class="material-icons left">add_home</i>Add New Property
               </span>
             </div>
             <div class="col s12 m4 right-align" style="padding-top: 6px;">
-              <div class="chip purple lighten-5" style="border: none;">
+              <div class="chip blue-grey lighten-5" style="border: none;">
                 <i class="material-icons left tiny">info</i>
                 All fields marked with * are required
               </div>
@@ -29,7 +29,7 @@
               <div class="col s12 m6">
                 <!-- Basic Information Section -->
                 <div class="section">
-                  <h5 class="purple-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
+                  <h5 class="blue-grey-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
                     <i class="material-icons" style="margin-right: 8px;">info</i>Basic Information
                   </h5>
                   <div class="divider" style="margin-bottom: 15px;"></div>
@@ -71,7 +71,7 @@
                 
                 <!-- Location Section -->
                 <div class="section">
-                  <h5 class="purple-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
+                  <h5 class="blue-grey-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
                     <i class="material-icons" style="margin-right: 8px;">place</i>Location
                   </h5>
                   <div class="divider" style="margin-bottom: 15px;"></div>
@@ -83,20 +83,10 @@
                       <label for="address">Street Address *</label>
                     </div>
                     
-                    <div class="input-field col s12 m5">
+                    <div class="input-field col s12">
                       <i class="material-icons prefix">location_city</i>
                       <input type="text" id="city" name="city" class="validate" required>
                       <label for="city">City *</label>
-                    </div>
-                    
-                    <div class="input-field col s6 m4">
-                      <input type="text" id="state" name="state" class="validate" required>
-                      <label for="state">State *</label>
-                    </div>
-                    
-                    <div class="input-field col s6 m3">
-                      <input type="text" id="zipCode" name="zipCode" class="validate" required>
-                      <label for="zipCode">Zip *</label>
                     </div>
                   </div>
                 </div>
@@ -106,13 +96,13 @@
               <div class="col s12 m6">
                 <!-- Image Upload Section -->
                 <div class="section">
-                  <h5 class="purple-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
+                  <h5 class="blue-grey-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
                     <i class="material-icons" style="margin-right: 8px;">image</i>Property Image
                   </h5>
                   <div class="divider" style="margin-bottom: 15px;"></div>
                   
                   <div class="file-field input-field">
-                    <div class="btn purple waves-effect">
+                    <div class="btn blue-grey darken-1 waves-effect">
                       <span><i class="material-icons left">file_upload</i>Upload</span>
                       <input type="file" id="propertyImage" name="image" accept="image/*" title="Select property image">
                     </div>
@@ -132,7 +122,7 @@
                 
                 <!-- Amenities Section -->
                 <div class="section">
-                  <h5 class="purple-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
+                  <h5 class="blue-grey-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
                     <i class="material-icons" style="margin-right: 8px;">hotel</i>Amenities
                   </h5>
                   <div class="divider" style="margin-bottom: 15px;"></div>
@@ -240,7 +230,7 @@
               <div class="row" style="margin-bottom: 0;">
                 <div class="col s12 right-align">
                   <a href="{{ url_for('index_views.get_listing_page') }}" class="btn-flat waves-effect">Cancel</a>
-                  <button type="submit" class="btn-large waves-effect waves-light purple" style="margin-left: 10px;">
+                  <button type="submit" class="btn-large waves-effect waves-light blue-grey darken-1" style="margin-left: 10px;">
                     <i class="material-icons left">add_circle</i>Add Property
                   </button>
                 </div>
@@ -252,6 +242,14 @@
     </div>
   </div>
 </div>
+
+<style>
+  /* Customize checkboxes to match blue-grey theme */
+  [type="checkbox"].filled-in:checked+span:not(.lever):after {
+    border: 2px solid #607d8b;
+    background-color: #607d8b;
+  }
+</style>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {

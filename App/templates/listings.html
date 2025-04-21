@@ -2,6 +2,60 @@
 {% block title %}Apartment Listings{% endblock %}
 {% block page %}Apartment Listings{% endblock %}
 
+{% block styles %}
+<style>
+  /* Only affects listings.html */
+
+  .collection-item a {
+    font-size: 1.2rem;
+    color: #455a64; /* blue-grey darken-2 */
+  }
+
+  .collection-item span {
+    font-size: 0.9rem;
+    color: #616161;
+  }
+
+  .apartment-details h5 {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .apartment-details p {
+    font-size: 1rem;
+    color: #444;
+  }
+
+  .apartment-details img {
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+
+  .review-card {
+    padding: 10px;
+    border-left: 4px solid #607d8b; /* blue-grey */
+    background-color: #f3f3f3;
+    margin-bottom: 15px;
+    border-radius: 5px;
+  }
+
+  .review-card span {
+    font-weight: bold;
+    color: #455a64; /* blue-grey darken-2 */
+  }
+
+  form input[type="text"],
+  form input[type="number"] {
+    background-color: #fff;
+    padding-left: 10px;
+  }
+
+  .btn.blue-grey {
+    background-color: #607d8b; /* blue-grey */
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 
 <div class="row" style="margin-top: 20px;">
@@ -13,11 +67,11 @@
         {% for apt in apartments %}
           <li class="collection-item">
             <a href="{{ url_for('index_views.get_listing_page') }}?apt_id={{ apt.id }}"
-               class="purple-text text-accent-2" style="font-weight: bold;">
+               class="blue-grey-text text-darken-2" style="font-weight: bold;">
               {{ apt.title }}
             </a><br>
             <span class="grey-text">
-              {{ apt.location.street }}, {{ apt.location.city }}, {{ apt.location.state }} {{ apt.location.zip_code }}
+              {{ apt.location.street }}, {{ apt.location.city }}
             </span>
           </li>
         {% endfor %}
@@ -31,41 +85,25 @@
   <div class="col s6">
     {% if selected_apartment %}
       <h5>{{ selected_apartment.title }}</h5>
-      
-      {% if selected_apartment.image_url %}
-        <div class="card" style="margin-bottom: 15px;">
-          <div class="card-image">
-            <img src="{{ selected_apartment.image_url }}" alt="{{ selected_apartment.title }}" style="max-height: 300px; object-fit: cover;">
-            <span class="card-title" style="background: rgba(0,0,0,0.5); width: 100%; padding: 8px;">${{ selected_apartment.price }} / month</span>
-          </div>
-        </div>
-      {% else %}
-        <div class="card" style="margin-bottom: 15px;">
-          <div class="card-image">
-            <img src="https://placehold.co/600x400?text=No+Image+Available" alt="No Image Available" style="max-height: 300px; object-fit: cover;">
-            <span class="card-title" style="background: rgba(0,0,0,0.5); width: 100%; padding: 8px;">${{ selected_apartment.price }} / month</span>
-          </div>
-        </div>
-      {% endif %}
-      
       <p><strong>Location:</strong>
         {{ selected_apartment.location.street }},
-        {{ selected_apartment.location.city }},
-        {{ selected_apartment.location.state }}
-        {{ selected_apartment.location.zip_code }}
+        {{ selected_apartment.location.city }}
       </p>
       <p>{{ selected_apartment.description }}</p>
+      {% if selected_apartment.image_url %}
+        <img src="{{ selected_apartment.image_url }}" alt="Apartment Image" style="max-width: 100%;">
+      {% endif %}
       
       <!-- Amenities Section -->
       <div class="section">
-        <h6 class="purple-text text-darken-1" style="font-weight: bold; margin-top: 20px;">Amenities</h6>
+        <h6 class="blue-grey-text text-darken-1" style="font-weight: bold; margin-top: 20px;">Amenities</h6>
         <div class="divider" style="margin-bottom: 15px;"></div>
         {% if selected_apartment.amenities.all() %}
           <div class="row">
             {% for listing_amenity in selected_apartment.amenities %}
               <div class="col s6">
                 <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                  <i class="material-icons purple-text tiny" style="margin-right: 8px;">check_circle</i>
+                  <i class="material-icons blue-grey-text tiny" style="margin-right: 8px;">check_circle</i>
                   <span>{{ listing_amenity.amenity.name }}</span>
                 </div>
               </div>
@@ -85,47 +123,25 @@
     <h5>Reviews</h5>
     {% if selected_apartment and selected_apartment.reviews %}
       {% for review in selected_apartment.reviews %}
-        <div class="card-panel white" style="margin-bottom: 15px; border-left: 4px solid #9c27b0; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-          <div class="row" style="margin-bottom: 0;">
-            <div class="col s12">
-              <span class="purple-text" style="font-weight: 500;">{{ review.tenant.username }}</span>
-              <div class="right">
-                {% for i in range(review.rating) %}
-                  <i class="material-icons tiny amber-text">star</i>
-                {% endfor %}
-                {% for i in range(5 - review.rating) %}
-                  <i class="material-icons tiny grey-text text-lighten-2">star</i>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-          <div class="row" style="margin-bottom: 0;">
-            <div class="col s12">
-              <p style="font-size: 1.1em; margin: 10px 0;">{{ review.comment }}</p>
-              <p class="grey-text" style="font-size: 0.8em; margin: 0;">
-                {{ review.date.strftime('%B %d, %Y') if review.date else 'Date not available' }}
-              </p>
-            </div>
-          </div>
+        <div class="card-panel grey lighten-4" style="margin-bottom: 10px;">
+          <p>{{ review.comment }}</p>
+          <span class="right grey-text">{{ review.rating }}/5</span>
         </div>
       {% endfor %}
     {% else %}
       <p>No reviews for this apartment yet.</p>
     {% endif %}
 
-    {% if selected_apartment and current_user and current_user.role == 'tenant' %}
-    <form method="POST" action="{{ url_for('index_views.add_review_page') }}" style="margin-top: 20px;">
-      <input type="hidden" name="apt_id" value="{{ selected_apartment.id }}">
+    {% if selected_apartment %}
+    <form method="POST" action="{{ url_for('user.index_view', apt_id=selected_apartment.id) }}" style="margin-top: 20px;">
       <div class="input-field">
         <input type="text" name="comment" placeholder="Enter your review" required>
       </div>
       <div class="input-field">
         <input type="number" name="rating" placeholder="Rating (1-5)" min="1" max="5" required>
       </div>
-      <button class="btn purple">Add</button>
+      <button class="btn blue-grey">Add</button>
     </form>
-    {% elif selected_apartment %}
-      <p class="grey-text">You must be logged in as a tenant to leave a review.</p>
     {% endif %}
   </div>
 </div>

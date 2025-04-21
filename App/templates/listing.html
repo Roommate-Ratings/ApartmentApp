@@ -8,7 +8,7 @@
 
   .collection-item a {
     font-size: 1.2rem;
-    color: #5e35b1;
+    color: #455a64; /* blue-grey darken-2 */
   }
 
   .collection-item span {
@@ -33,7 +33,7 @@
 
   .review-card {
     padding: 10px;
-    border-left: 4px solid #7e57c2;
+    border-left: 4px solid #607d8b; /* blue-grey */
     background-color: #f3f3f3;
     margin-bottom: 15px;
     border-radius: 5px;
@@ -41,7 +41,7 @@
 
   .review-card span {
     font-weight: bold;
-    color: #5e35b1;
+    color: #455a64; /* blue-grey darken-2 */
   }
 
   form input[type="text"],
@@ -50,8 +50,8 @@
     padding-left: 10px;
   }
 
-  .btn.purple {
-    background-color: #5e35b1;
+  .btn.blue-grey {
+    background-color: #607d8b; /* blue-grey */
   }
 </style>
 {% endblock %}
@@ -67,7 +67,7 @@
         {% for apt in apartments %}
           <li class="collection-item">
             <a href="{{ url_for('index_views.get_listing_page') }}?apt_id={{ apt.id }}"
-               class="purple-text text-accent-2" style="font-weight: bold;">
+               class="blue-grey-text text-darken-2" style="font-weight: bold;">
               {{ apt.title }}
             </a><br>
             <span class="grey-text">
@@ -122,7 +122,7 @@
       <div class="input-field">
         <input type="number" name="rating" placeholder="Rating (1-5)" min="1" max="5" required>
       </div>
-      <button class="btn purple">Add</button>
+      <button class="btn blue-grey">Add</button>
     </form>
     {% endif %}
   </div>

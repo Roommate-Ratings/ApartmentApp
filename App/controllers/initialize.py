@@ -10,11 +10,9 @@ import random
 
 
 def initialize():
-    # Drop all tables and recreate them
     db.drop_all()
     db.create_all()
 
-    # Create a regular user
     create_user('bob', 'bob@gmail.com', 'bobpass')
 
     # Create a landlord and a tenant
@@ -23,57 +21,49 @@ def initialize():
 
     # Create listings for the landlord
     apartment1 = jill.create_listing(
-        title="Apartment 1",
+        title="Trincity Home",
         description="A nice apartment",
         price=1200,
         bedrooms=2,
         bathrooms=1,
         street="123 Main St",
-        city="New York",
-        state="NY",
-        zip_code="10001"
+        city="Trincity"
     )
     # Set image URL for apartment 1
     apartment1.image_url = "/static/uploads/apartment1.jpg"
     
     apartment2 = jill.create_listing(
-        title="Apartment 2",
+        title="Arouca Penthouse",
         description="Another nice apartment",
         price=1500,
         bedrooms=3,
         bathrooms=2,
         street="456 Elm St",
-        city="New York",
-        state="NY",
-        zip_code="10002"
+        city="Arouca"
     )
     # Set image URL for apartment 2
     apartment2.image_url = "/static/uploads/apartment2.jpg"
     
     apartment3 = jill.create_listing(
-        title="Apartment 3",
+        title="San Juan Villa",
         description="A spacious apartment",
         price=1800,
         bedrooms=4,
         bathrooms=3,
         street="789 Oak St",
-        city="New York",
-        state="NY",
-        zip_code="10003"
+        city="San Juan"
     )
     # Set image URL for apartment 3
     apartment3.image_url = "/static/uploads/apartment3.jpg"
     
     apartment4 = jill.create_listing(
-        title="Apartment 4",
+        title="San Fernando Apartment",
         description="A cozy apartment",
         price=900,
         bedrooms=1,
         bathrooms=1,
         street="101 Pine St",
-        city="New York",
-        state="NY",
-        zip_code="10004"
+        city="San Fernando"
     )
     # Set image URL for apartment 4
     apartment4.image_url = "/static/uploads/apartment4.jpg"

@@ -23,7 +23,7 @@ class Landlord(User):
         'user': self.user.get_json()
       }  
     
-    def create_listing(self, title, description, price, bedrooms, bathrooms, street, city, state, zip_code):
+    def create_listing(self, title, description, price, bedrooms, bathrooms, street, city, state="", zip_code=""):
         if not self.id:
             db.session.add(self)
             db.session.commit()
@@ -42,8 +42,6 @@ class Landlord(User):
         location = Location(
             street=street,
             city=city,
-            state=state,
-            zip_code=zip_code,
             listing_id=listing.id
         )
         db.session.add(location)
