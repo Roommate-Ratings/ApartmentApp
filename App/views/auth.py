@@ -17,7 +17,7 @@ from App.controllers import (
 )
 
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
-
+index_views = Blueprint('index_views', __name__, template_folder='../templates')
 
 
 '''
