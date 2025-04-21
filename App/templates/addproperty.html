@@ -4,19 +4,19 @@
 
 {% block content %}
 
-<div class="container-fluid" style="padding: 0 30px;">
+<div class="container-fluid container-padding">
   <div class="row">
     <div class="col s12">
-      <div class="card" style="margin-top: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+      <div class="card property-card">
         <div class="card-content">
-          <div class="row" style="margin-bottom: 0;">
+          <div class="row no-margin-bottom">
             <div class="col s12 m8">
-              <span class="card-title blue-grey-text text-darken-1" style="font-weight: bold; font-size: 24px;">
+              <span class="card-title blue-grey-text text-darken-1 property-title">
                 <i class="material-icons left">add_home</i>Add New Property
               </span>
             </div>
-            <div class="col s12 m4 right-align" style="padding-top: 6px;">
-              <div class="chip blue-grey lighten-5" style="border: none;">
+            <div class="col s12 m4 right-align info-header">
+              <div class="chip blue-grey lighten-5 no-border">
                 <i class="material-icons left tiny">info</i>
                 All fields marked with * are required
               </div>
@@ -29,12 +29,12 @@
               <div class="col s12 m6">
                 <!-- Basic Information Section -->
                 <div class="section">
-                  <h5 class="blue-grey-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
-                    <i class="material-icons" style="margin-right: 8px;">info</i>Basic Information
+                  <h5 class="blue-grey-text text-darken-1 section-title">
+                    <i class="material-icons section-icon">info</i>Basic Information
                   </h5>
-                  <div class="divider" style="margin-bottom: 15px;"></div>
+                  <div class="divider section-divider"></div>
                   
-                  <div class="row" style="margin-bottom: 0;">
+                  <div class="row no-margin-bottom">
                     <div class="input-field col s12">
                       <i class="material-icons prefix">title</i>
                       <input type="text" id="propertyTitle" name="propertyTitle" class="validate" required maxlength="20">
@@ -71,12 +71,12 @@
                 
                 <!-- Location Section -->
                 <div class="section">
-                  <h5 class="blue-grey-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
-                    <i class="material-icons" style="margin-right: 8px;">place</i>Location
+                  <h5 class="blue-grey-text text-darken-1 section-title">
+                    <i class="material-icons section-icon">place</i>Location
                   </h5>
-                  <div class="divider" style="margin-bottom: 15px;"></div>
+                  <div class="divider section-divider"></div>
                   
-                  <div class="row" style="margin-bottom: 0;">
+                  <div class="row no-margin-bottom">
                     <div class="input-field col s12">
                       <i class="material-icons prefix">home</i>
                       <input type="text" id="address" name="address" class="validate" required>
@@ -96,10 +96,10 @@
               <div class="col s12 m6">
                 <!-- Image Upload Section -->
                 <div class="section">
-                  <h5 class="blue-grey-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
-                    <i class="material-icons" style="margin-right: 8px;">image</i>Property Image
+                  <h5 class="blue-grey-text text-darken-1 section-title">
+                    <i class="material-icons section-icon">image</i>Property Image
                   </h5>
-                  <div class="divider" style="margin-bottom: 15px;"></div>
+                  <div class="divider section-divider"></div>
                   
                   <div class="file-field input-field">
                     <div class="btn blue-grey darken-1 waves-effect">
@@ -111,10 +111,10 @@
                     </div>
                   </div>
                   
-                  <div class="card-panel grey lighten-4" style="margin-top: 10px; text-align: center; padding: 20px;">
+                  <div class="card-panel grey lighten-4 image-preview">
                     <i class="material-icons medium grey-text">photo_size_select_actual</i>
                     <p class="grey-text">Image preview will appear here</p>
-                    <p class="grey-text text-darken-1" style="font-size: 0.85rem;">
+                    <p class="grey-text text-darken-1 image-tip">
                       Recommended: 1200 x 800 pixels, JPEG or PNG format
                     </p>
                   </div>
@@ -122,100 +122,100 @@
                 
                 <!-- Amenities Section -->
                 <div class="section">
-                  <h5 class="blue-grey-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
-                    <i class="material-icons" style="margin-right: 8px;">hotel</i>Amenities
+                  <h5 class="blue-grey-text text-darken-1 section-title">
+                    <i class="material-icons section-icon">hotel</i>Amenities
                   </h5>
-                  <div class="divider" style="margin-bottom: 15px;"></div>
+                  <div class="divider section-divider"></div>
                   
-                  <p class="grey-text" style="margin-bottom: 15px;">Select all that apply:</p>
+                  <p class="grey-text amenity-hint">Select all that apply:</p>
                   
-                  <div class="row" style="margin-left: -10px; margin-right: -10px;">
-                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
-                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                  <div class="row amenity-row">
+                    <div class="col s6 m4 l4 amenity-col">
+                      <label class="amenity-label">
                         <input type="checkbox" class="filled-in" name="amenities" value="1">
                         <span>Air Conditioning</span>
                       </label>
                     </div>
                     
-                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
-                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                    <div class="col s6 m4 l4 amenity-col">
+                      <label class="amenity-label">
                         <input type="checkbox" class="filled-in" name="amenities" value="2">
                         <span>Heating</span>
                       </label>
                     </div>
                     
-                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
-                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                    <div class="col s6 m4 l4 amenity-col">
+                      <label class="amenity-label">
                         <input type="checkbox" class="filled-in" name="amenities" value="3">
                         <span>Washer/Dryer</span>
                       </label>
                     </div>
                     
-                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
-                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                    <div class="col s6 m4 l4 amenity-col">
+                      <label class="amenity-label">
                         <input type="checkbox" class="filled-in" name="amenities" value="4">
                         <span>Dishwasher</span>
                       </label>
                     </div>
                     
-                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
-                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                    <div class="col s6 m4 l4 amenity-col">
+                      <label class="amenity-label">
                         <input type="checkbox" class="filled-in" name="amenities" value="5">
                         <span>Parking</span>
                       </label>
                     </div>
                     
-                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
-                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                    <div class="col s6 m4 l4 amenity-col">
+                      <label class="amenity-label">
                         <input type="checkbox" class="filled-in" name="amenities" value="6">
                         <span>Gym</span>
                       </label>
                     </div>
                     
-                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
-                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                    <div class="col s6 m4 l4 amenity-col">
+                      <label class="amenity-label">
                         <input type="checkbox" class="filled-in" name="amenities" value="7">
                         <span>Pool</span>
                       </label>
                     </div>
                     
-                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
-                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                    <div class="col s6 m4 l4 amenity-col">
+                      <label class="amenity-label">
                         <input type="checkbox" class="filled-in" name="amenities" value="8">
                         <span>Balcony</span>
                       </label>
                     </div>
                     
-                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
-                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                    <div class="col s6 m4 l4 amenity-col">
+                      <label class="amenity-label">
                         <input type="checkbox" class="filled-in" name="amenities" value="9">
                         <span>Pets Allowed</span>
                       </label>
                     </div>
                     
-                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
-                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                    <div class="col s6 m4 l4 amenity-col">
+                      <label class="amenity-label">
                         <input type="checkbox" class="filled-in" name="amenities" value="10">
                         <span>Furnished</span>
                       </label>
                     </div>
                     
-                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
-                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                    <div class="col s6 m4 l4 amenity-col">
+                      <label class="amenity-label">
                         <input type="checkbox" class="filled-in" name="amenities" value="11">
                         <span>Wi-Fi</span>
                       </label>
                     </div>
                     
-                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
-                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                    <div class="col s6 m4 l4 amenity-col">
+                      <label class="amenity-label">
                         <input type="checkbox" class="filled-in" name="amenities" value="12">
                         <span>Cable TV</span>
                       </label>
                     </div>
                     
-                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
-                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                    <div class="col s6 m4 l4 amenity-col">
+                      <label class="amenity-label">
                         <input type="checkbox" class="filled-in" name="amenities" value="13">
                         <span>Security System</span>
                       </label>
@@ -223,25 +223,25 @@
                   </div>
                 </div>
               </div>
-      </div>
+            </div>
             
             <!-- Submit Button -->
-            <div class="card-action" style="background-color: #f9f9f9; border-radius: 0 0 8px 8px; padding: 20px; margin: 20px -20px -20px -20px;">
-              <div class="row" style="margin-bottom: 0;">
+            <div class="card-action submit-action">
+              <div class="row no-margin-bottom">
                 <div class="col s12 right-align">
                   <a href="{{ url_for('index_views.get_listing_page') }}" class="btn-flat waves-effect">Cancel</a>
-                  <button type="submit" class="btn-large waves-effect waves-light blue-grey darken-1" style="margin-left: 10px;">
+                  <button type="submit" class="btn-large waves-effect waves-light blue-grey darken-1 submit-btn">
                     <i class="material-icons left">add_circle</i>Add Property
                   </button>
-      </div>
-      </div>
-      </div>
+                </div>
+              </div>
+            </div>
           </form>
+        </div>
       </div>
-      </div>
-      </div>
-      </div>
-      </div>
+    </div>
+  </div>
+</div>
 
 <style>
   /* Customize checkboxes to match blue-grey theme */
@@ -249,13 +249,103 @@
     border: 2px solid #607d8b;
     background-color: #607d8b;
   }
+
+  /* Container */
+  .container-padding {
+    padding: 0 30px;
+  }
+
+  /* Card */
+  .property-card {
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+
+  /* Title area */
+  .no-margin-bottom {
+    margin-bottom: 0;
+  }
+
+  .property-title {
+    font-weight: bold;
+    font-size: 24px;
+  }
+
+  .info-header {
+    padding-top: 6px;
+  }
+
+  .no-border {
+    border: none;
+  }
+
+  /* Section headers */
+  .section-title {
+    font-size: 18px;
+    margin: 20px 0 10px 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .section-icon {
+    margin-right: 8px;
+  }
+
+  .section-divider {
+    margin-bottom: 15px;
+  }
+
+  /* Image preview */
+  .image-preview {
+    margin-top: 10px;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .image-tip {
+    font-size: 0.85rem;
+  }
+
+  /* Amenities */
+  .amenity-hint {
+    margin-bottom: 15px;
+  }
+
+  .amenity-row {
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+
+  .amenity-col {
+    padding: 5px 10px;
+  }
+
+  .amenity-label {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+  }
+
+  /* Submit action */
+  .submit-action {
+    background-color: #f9f9f9;
+    border-radius: 0 0 8px 8px;
+    padding: 20px;
+    margin: 20px -20px -20px -20px;
+  }
+
+  .submit-btn {
+    margin-left: 10px;
+  }
 </style>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Preview uploaded image
     document.getElementById('propertyImage').onchange = function(e) {
-      var preview = document.querySelector('.card-panel');
+      var preview = document.querySelector('.image-preview');
       if (this.files && this.files[0]) {
         var reader = new FileReader();
         reader.onload = function(e) {
@@ -267,4 +357,4 @@
   });
 </script>
 
-    {% endblock %}
+{% endblock %}

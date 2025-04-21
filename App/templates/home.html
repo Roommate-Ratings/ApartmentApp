@@ -1,38 +1,38 @@
 {% extends "layout.html" %}
-{% block title %}Trinidad & Tobago Properties{% endblock %}
+{% block title %}Roomate Ratings{% endblock %}
 
 
 {% block content %}
 <!-- Hero Section / Filter Buttons -->
-<div class="section blue-grey lighten-5" style="padding: 40px 0 50px;">
+<div class="section hero-section">
   <div class="container center-align">
-    <h4 class="header blue-grey-text text-darken-3" style="font-weight: bold;">Find Your Perfect Caribbean Home</h4>
-    <p class="flow-text blue-grey-text text-darken-1">Browse quality properties across Trinidad & Tobago with verified reviews.</p>
+    <h4 class="header hero-title">Find Your Perfect Caribbean Home</h4>
+    <p class="flow-text hero-subtitle">Browse quality properties across Trinidad & Tobago with verified reviews.</p>
     
     <!-- Search Bar -->
-    <div class="row" style="margin-top: 30px; margin-bottom: 30px;">
+    <div class="row search-row">
       <div class="col s12 m10 offset-m1 l8 offset-l2">
-        <div class="card" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-          <div class="card-content" style="padding: 20px;">
+        <div class="card search-card">
+          <div class="card-content search-content">
             <form action="{{ url_for('index_views.search_listings') }}" method="GET">
-              <div class="input-field" style="margin-top: 0; margin-bottom: 0;">
+              <div class="input-field search-input">
                 <i class="material-icons prefix blue-grey-text">search</i>
-                <input type="text" name="query" id="search_query" placeholder="Search by location, property type, or keyword..." style="margin-bottom: 0;">
+                <input type="text" name="query" id="search_query" placeholder="Search by location, property type, or keyword...">
               </div>
               
               <!-- Quick Filters (expandable) -->
-              <div class="row" style="margin-bottom: 0; margin-top: 15px;">
-                <div class="col s12" style="text-align: left;">
-                  <a class="dropdown-trigger blue-grey-text" href="#" data-target="filters-dropdown" style="font-weight: 500; display: inline-flex; align-items: center;">
-                    <i class="material-icons left" style="margin-right: 5px;">filter_list</i>
+              <div class="row filter-toggle-row">
+                <div class="col s12 filter-toggle-col">
+                  <a class="dropdown-trigger blue-grey-text filter-toggle-link" href="#" data-target="filters-dropdown">
+                    <i class="material-icons left filter-icon">filter_list</i>
                     Advanced Filters
-                    <i class="material-icons" style="font-size: 1rem; margin-left: 5px;">arrow_drop_down</i>
+                    <i class="material-icons filter-arrow">arrow_drop_down</i>
                   </a>
                 </div>
               </div>
               
               <!-- Expandable Filters -->
-              <div id="filters-dropdown" class="row" style="display: none; text-align: left; margin-top: 15px; margin-bottom: 0;">
+              <div id="filters-dropdown" class="row filter-dropdown" style="display: none;">
                 <div class="col s12 m4">
                   <label>Price Range</label>
                   <div class="range-field">
@@ -60,8 +60,8 @@
                   </select>
                 </div>
                 
-                <div class="col s12 m12">
-                  <p style="margin-top: 15px;">
+                <div class="col s12 m12 featured-col">
+                  <p>
                     <label>
                       <input type="checkbox" name="featured" class="filled-in" />
                       <span>Featured Properties Only</span>
@@ -70,9 +70,9 @@
                 </div>
               </div>
               
-              <div class="row" style="margin-bottom: 0; margin-top: 15px;">
+              <div class="row search-button-row">
                 <div class="col s12">
-                  <button type="submit" class="btn waves-effect waves-light blue-grey darken-2" style="width: 120px;">
+                  <button type="submit" class="btn waves-effect waves-light blue-grey darken-2 search-button">
                     Search
                   </button>
                 </div>
@@ -84,21 +84,21 @@
     </div>
     
     <!-- Location Quick Links -->
-    <div class="row" style="margin-bottom: 10px;">
+    <div class="row location-links-row">
       <div class="col s12">
-        <div class="chip blue-grey lighten-4" style="margin: 5px; font-weight: 500;">
+        <div class="chip location-chip">
           <a href="?location=Trincity" class="blue-grey-text text-darken-2">Trincity</a>
         </div>
-        <div class="chip blue-grey lighten-4" style="margin: 5px; font-weight: 500;">
+        <div class="chip location-chip">
           <a href="?location=Arouca" class="blue-grey-text text-darken-2">Arouca</a>
         </div>
-        <div class="chip blue-grey lighten-4" style="margin: 5px; font-weight: 500;">
+        <div class="chip location-chip">
           <a href="?location=San Juan" class="blue-grey-text text-darken-2">San Juan</a>
         </div>
-        <div class="chip blue-grey lighten-4" style="margin: 5px; font-weight: 500;">
+        <div class="chip location-chip">
           <a href="?location=San Fernando" class="blue-grey-text text-darken-2">San Fernando</a>
         </div>
-        <div class="chip blue-grey lighten-4" style="margin: 5px; font-weight: 500;">
+        <div class="chip location-chip">
           <a href="?location=Port of Spain" class="blue-grey-text text-darken-2">Port of Spain</a>
         </div>
       </div>
@@ -107,60 +107,60 @@
 </div>
 
 <!-- Property Cards Grid -->
-<div class="section" style="padding: 40px 0;">
+<div class="section property-section">
   <div class="container">
-    <div class="row" style="margin-bottom: 0;">
+    <div class="row property-row">
       {% if properties %}
         {% for property in properties %}
-        <div class="col s12 m6 l6" style="margin-bottom: 30px;">
-          <a href="{{ url_for('index_views.get_listing_page') }}?apt_id={{ property.id }}" class="card-link" style="color: inherit; text-decoration: none; display: block;">
-            <div class="card hoverable" style="border-radius: 10px; overflow: hidden; height: 100%; display: flex; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;">
+        <div class="col s12 m6 l6 property-col">
+          <a href="{{ url_for('index_views.get_listing_page') }}?apt_id={{ property.id }}" class="card-link">
+            <div class="card hoverable property-card">
               <div class="card-image">
-                <img src="{{ property.image_url or '/static/uploads/apartment' ~ (property.id % 4 + 1) ~ '.jpg' }}" alt="{{ property.title }}" style="height: 240px; object-fit: cover; width: 100%;">
-                <span class="card-title" style="background: rgba(96, 125, 139, 0.7); width: 100%; padding: 12px 16px; font-weight: 500; font-size: 1.25rem;">${{ property.price }} / month</span>
+                <img src="{{ property.image_url or '/static/uploads/apartment' ~ (property.id % 4 + 1) ~ '.jpg' }}" alt="{{ property.title }}" class="property-image">
+                <span class="card-title property-card-title">${{ property.price }} / month</span>
               </div>
-              <div class="card-content" style="padding: 20px 24px; flex-grow: 1; background-color: white;">
-                <h5 class="blue-grey-text text-darken-2" style="font-weight: bold; margin-top: 8px; margin-bottom: 20px; font-size: 1.5rem;">{{ property.title }}</h5>
+              <div class="card-content property-card-content">
+                <h5 class="blue-grey-text text-darken-2 property-title">{{ property.title }}</h5>
                 
-                <div style="display: flex; margin-bottom: 20px;">
-                  <div style="display: flex; align-items: center; margin-right: 24px;">
+                <div class="property-features">
+                  <div class="property-feature">
                     <i class="material-icons small blue-grey-text">hotel</i>
-                    <span style="font-size: 1.1rem;"><strong>{{ property.bedrooms }}</strong> Bed{% if property.bedrooms != 1 %}s{% endif %}</span>
+                    <span><strong>{{ property.bedrooms }}</strong> Bed{% if property.bedrooms != 1 %}s{% endif %}</span>
                   </div>
-                  <div style="display: flex; align-items: center;">
+                  <div class="property-feature">
                     <i class="material-icons small blue-grey-text">bathtub</i>
-                    <span style="font-size: 1.1rem;"><strong>{{ property.bathrooms }}</strong> Bath{% if property.bathrooms != 1 %}s{% endif %}</span>
+                    <span><strong>{{ property.bathrooms }}</strong> Bath{% if property.bathrooms != 1 %}s{% endif %}</span>
                   </div>
                 </div>
                 
-                <p style="margin-bottom: 16px; line-height: 1.5; font-size: 1.05rem;"><strong>Description:</strong> {{ property.description }}</p>
+                <p class="property-description"><strong>Description:</strong> {{ property.description }}</p>
                 
                 {% if property.location %}
-                  <div style="display: flex; align-items: flex-start; margin-bottom: 20px; background-color: #eceff1; padding: 15px; border-radius: 8px;">
+                  <div class="property-location">
                     <i class="material-icons small blue-grey-text">place</i>
                     <div>
-                      <strong style="display: block; margin-bottom: 5px; color: #455a64;">Located at:</strong>
-                      <span style="font-size: 1.05rem;">{{ property.location.street }}, {{ property.location.city }}</span>
+                      <strong class="location-label">Located at:</strong>
+                      <span class="location-address">{{ property.location.street }}, {{ property.location.city }}</span>
                     </div>
                   </div>
                 {% endif %}
                 
                 <!-- Amenities Preview (showing first 3) -->
                 {% if property.listing_amenities %}
-                  <div style="margin-top: 10px; background-color: #eceff1; padding: 15px; border-radius: 8px;">
-                    <p style="font-weight: 500; margin-bottom: 12px; color: #455a64; font-size: 1.1rem;">Amenities:</p>
-                    <div class="row" style="margin-bottom: 0;">
+                  <div class="property-amenities">
+                    <p class="amenities-title">Amenities:</p>
+                    <div class="row amenities-row">
                       {% for listing_amenity in property.listing_amenities[:3] %}
-                        <div class="col s12 m4" style="margin-bottom: 8px;">
-                          <div style="display: flex; align-items: center;">
-                            <i class="material-icons blue-grey-text" style="margin-right: 10px; font-size: 1.2rem;">check_circle</i>
-                            <span style="font-size: 1rem;">{{ listing_amenity.amenity.name }}</span>
+                        <div class="col s12 m4 amenity-col">
+                          <div class="amenity-item">
+                            <i class="material-icons blue-grey-text amenity-icon">check_circle</i>
+                            <span class="amenity-name">{{ listing_amenity.amenity.name }}</span>
                           </div>
                         </div>
                       {% endfor %}
                       {% if property.listing_amenities|length > 3 %}
-                        <div class="col s12" style="margin-top: 5px;">
-                          <span class="blue-grey-text" style="font-size: 0.95rem; font-style: italic;">+ {{ property.listing_amenities|length - 3 }} more amenities</span>
+                        <div class="col s12 more-amenities-col">
+                          <span class="blue-grey-text more-amenities-text">+ {{ property.listing_amenities|length - 3 }} more amenities</span>
                         </div>
                       {% endif %}
                     </div>
@@ -172,8 +172,8 @@
         </div>
         {% endfor %}
       {% else %}
-        <div class="col s12 center-align">
-          <div class="card-panel" style="padding: 30px; margin-top: 20px;">
+        <div class="col s12 center-align no-properties-col">
+          <div class="card-panel no-properties-panel">
             <h5 class="grey-text">No properties available at this time.</h5>
             <p>Please check back later or adjust your search criteria.</p>
           </div>
@@ -184,6 +184,246 @@
 </div>
 
 <style>
+  /* Hero Section */
+  .hero-section {
+    padding: 40px 0 50px;
+    background-color: #eceff1; /* blue-grey lighten-5 */
+  }
+  
+  .hero-title {
+    font-weight: bold;
+    color: #37474f; /* blue-grey-text text-darken-3 */
+  }
+  
+  .hero-subtitle {
+    color: #546e7a; /* blue-grey-text text-darken-1 */
+  }
+  
+  /* Search Bar and Filters */
+  .search-row {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  
+  .search-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  
+  .search-content {
+    padding: 20px;
+  }
+  
+  .search-input {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  
+  .filter-toggle-row {
+    margin-bottom: 0;
+    margin-top: 15px;
+  }
+  
+  .filter-toggle-col {
+    text-align: left;
+  }
+  
+  .filter-toggle-link {
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .filter-icon {
+    margin-right: 5px;
+  }
+  
+  .filter-arrow {
+    font-size: 1rem;
+    margin-left: 5px;
+  }
+  
+  .filter-dropdown {
+    text-align: left;
+    margin-top: 15px;
+    margin-bottom: 0;
+  }
+  
+  .featured-col {
+    margin-top: 15px;
+  }
+  
+  .search-button-row {
+    margin-bottom: 0;
+    margin-top: 15px;
+  }
+  
+  .search-button {
+    width: 120px;
+  }
+  
+  /* Location Links */
+  .location-links-row {
+    margin-bottom: 10px;
+  }
+  
+  .location-chip {
+    margin: 5px;
+    font-weight: 500;
+    background-color: #eceff1; /* blue-grey lighten-4 */
+  }
+  
+  /* Property Section */
+  .property-section {
+    padding: 40px 0;
+  }
+  
+  .property-row {
+    margin-bottom: 0;
+  }
+  
+  .property-col {
+    margin-bottom: 30px;
+  }
+  
+  .card-link {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .property-card {
+    border-radius: 10px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .property-image {
+    height: 240px;
+    object-fit: cover;
+    width: 100%;
+  }
+  
+  .property-card-title {
+    background: rgba(96, 125, 139, 0.7);
+    width: 100%;
+    padding: 12px 16px;
+    font-weight: 500;
+    font-size: 1.25rem;
+  }
+  
+  .property-card-content {
+    padding: 20px 24px;
+    flex-grow: 1;
+    background-color: white;
+  }
+  
+  .property-title {
+    font-weight: bold;
+    margin-top: 8px;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+  }
+  
+  .property-features {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .property-feature {
+    display: flex;
+    align-items: center;
+    margin-right: 24px;
+  }
+  
+  .property-feature span {
+    font-size: 1.1rem;
+  }
+  
+  .property-description {
+    margin-bottom: 16px;
+    line-height: 1.5;
+    font-size: 1.05rem;
+  }
+  
+  .property-location {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    background-color: #eceff1;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .location-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #455a64;
+  }
+  
+  .location-address {
+    font-size: 1.05rem;
+  }
+  
+  .property-amenities {
+    margin-top: 10px;
+    background-color: #eceff1;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .amenities-title {
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: #455a64;
+    font-size: 1.1rem;
+  }
+  
+  .amenities-row {
+    margin-bottom: 0;
+  }
+  
+  .amenity-col {
+    margin-bottom: 8px;
+  }
+  
+  .amenity-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .amenity-icon {
+    margin-right: 10px;
+    font-size: 1.2rem;
+  }
+  
+  .amenity-name {
+    font-size: 1rem;
+  }
+  
+  .more-amenities-col {
+    margin-top: 5px;
+  }
+  
+  .more-amenities-text {
+    font-size: 0.95rem;
+    font-style: italic;
+  }
+  
+  .no-properties-col {
+    text-align: center;
+  }
+  
+  .no-properties-panel {
+    padding: 30px;
+    margin-top: 20px;
+  }
+  
+  /* Existing styles below */
   .card-link:hover .card {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(96, 125, 139, 0.2);
