@@ -5,7 +5,7 @@
 {% block content %}
 
 <div class="row" style="margin-top: 20px;">
-  
+
   <!-- Left Column: List of Apartments -->
   <div class="col s3">
     <h5>Apartments</h5>
@@ -14,8 +14,10 @@
         {% for apt in apartments %}
           <li class="collection-item">
             <strong>{{ apt.title }}</strong><br>
-            <span class="grey-text">{{ apt.location }}</span>
-            <a href="{{ url_for('listings_bp.view_listing', apt_id=apt.id) }}"
+            <span class="grey-text">
+              {{ apt.location.street }}, {{ apt.location.city }}, {{ apt.location.state }} {{ apt.location.zip_code }}
+            </span>
+            <a href="{{ url_for('index_views.get_listing_page', apt_id=apt.id) }}"
                class="secondary-content purple-text text-accent-2"
                style="font-weight: bold;">
               View
@@ -27,6 +29,7 @@
       {% endif %}
     </ul>
   </div>
+
 
   <!-- Middle Column: Selected Apartment Details -->
   <div class="col s6">

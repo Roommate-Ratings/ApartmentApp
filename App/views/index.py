@@ -1,6 +1,7 @@
 from flask import Blueprint, redirect, render_template, request, send_from_directory, jsonify
 from flask_jwt_extended import get_jwt_identity
 from App.controllers import create_user, initialize
+from App.models import Listing
 
 index_views = Blueprint('index_views', __name__, template_folder='../templates')
 
@@ -49,9 +50,16 @@ def index_page():
     # Not filtering dummy data; just passing all properties.
     return render_template('home.html', properties=properties)
 
+
+
 @index_views.route('/listings', methods=['GET'])
 def get_listing_page():
-    return render_template('listings.html')
+    apartments = Listing.query.all()
+    return render_template(
+        'listings.html', 
+        apartments=apartments
+        )
+
 
 @index_views.route('/addproperty', methods=['GET'])
 def add_property_page():
