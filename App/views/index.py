@@ -107,8 +107,6 @@ def add_property_page():
         title = request.form.get('propertyTitle')
         address = request.form.get('address')
         city = request.form.get('city')
-        state = request.form.get('state')
-        zip_code = request.form.get('zipCode')
         price = float(request.form.get('price'))
         description = request.form.get('description')
         bedrooms = int(request.form.get('bedrooms', 0))
@@ -151,8 +149,8 @@ def add_property_page():
             bathrooms=bathrooms,
             street=address,
             city=city,
-            state=state,
-            zip_code=zip_code
+            state="",  # Passing empty string for state
+            zip_code=""  # Passing empty string for zip_code
         )
         
         # Set the image URL if an image was uploaded

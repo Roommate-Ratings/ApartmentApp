@@ -1,75 +1,259 @@
 {% extends "layout.html" %}
-{% block title %}Roommate Ratings{% endblock %}
+{% block title %}Trinidad & Tobago Properties{% endblock %}
 
 
 {% block content %}
 <!-- Hero Section / Filter Buttons -->
-<div class="section grey lighten-3" style="padding: 30px 0;">
+<div class="section blue-grey lighten-5" style="padding: 40px 0 50px;">
   <div class="container center-align">
-    <h4 class="header">Real Reviews. Real Homes.</h4>
-    <p class="flow-text">Browse our curated listings for every lifestyle.</p>
-    <div class="row" style="margin-top: 20px;">
+    <h4 class="header blue-grey-text text-darken-3" style="font-weight: bold;">Find Your Perfect Caribbean Home</h4>
+    <p class="flow-text blue-grey-text text-darken-1">Browse quality properties across Trinidad & Tobago with verified reviews.</p>
+    
+    <!-- Search Bar -->
+    <div class="row" style="margin-top: 30px; margin-bottom: 30px;">
+      <div class="col s12 m10 offset-m1 l8 offset-l2">
+        <div class="card" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+          <div class="card-content" style="padding: 20px;">
+            <form action="{{ url_for('index_views.search_listings') }}" method="GET">
+              <div class="input-field" style="margin-top: 0; margin-bottom: 0;">
+                <i class="material-icons prefix blue-grey-text">search</i>
+                <input type="text" name="query" id="search_query" placeholder="Search by location, property type, or keyword..." style="margin-bottom: 0;">
+              </div>
+              
+              <!-- Quick Filters (expandable) -->
+              <div class="row" style="margin-bottom: 0; margin-top: 15px;">
+                <div class="col s12" style="text-align: left;">
+                  <a class="dropdown-trigger blue-grey-text" href="#" data-target="filters-dropdown" style="font-weight: 500; display: inline-flex; align-items: center;">
+                    <i class="material-icons left" style="margin-right: 5px;">filter_list</i>
+                    Advanced Filters
+                    <i class="material-icons" style="font-size: 1rem; margin-left: 5px;">arrow_drop_down</i>
+                  </a>
+                </div>
+              </div>
+              
+              <!-- Expandable Filters -->
+              <div id="filters-dropdown" class="row" style="display: none; text-align: left; margin-top: 15px; margin-bottom: 0;">
+                <div class="col s12 m4">
+                  <label>Price Range</label>
+                  <div class="range-field">
+                    <input type="range" name="price_range" min="500" max="5000" value="1500" id="price_range">
+                    <span id="price_display" class="blue-grey-text right">$1500</span>
+                  </div>
+                </div>
+                <div class="col s6 m4">
+                  <label>Bedrooms</label>
+                  <select name="bedrooms" class="browser-default">
+                    <option value="">Any</option>
+                    <option value="1">1+ Bedroom</option>
+                    <option value="2">2+ Bedrooms</option>
+                    <option value="3">3+ Bedrooms</option>
+                    <option value="4">4+ Bedrooms</option>
+                  </select>
+                </div>
+                <div class="col s6 m4">
+                  <label>Bathrooms</label>
+                  <select name="bathrooms" class="browser-default">
+                    <option value="">Any</option>
+                    <option value="1">1+ Bathroom</option>
+                    <option value="2">2+ Bathrooms</option>
+                    <option value="3">3+ Bathrooms</option>
+                  </select>
+                </div>
+                
+                <div class="col s12 m12">
+                  <p style="margin-top: 15px;">
+                    <label>
+                      <input type="checkbox" name="featured" class="filled-in" />
+                      <span>Featured Properties Only</span>
+                    </label>
+                  </p>
+                </div>
+              </div>
+              
+              <div class="row" style="margin-bottom: 0; margin-top: 15px;">
+                <div class="col s12">
+                  <button type="submit" class="btn waves-effect waves-light blue-grey darken-2" style="width: 120px;">
+                    Search
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Location Quick Links -->
+    <div class="row" style="margin-bottom: 10px;">
+      <div class="col s12">
+        <div class="chip blue-grey lighten-4" style="margin: 5px; font-weight: 500;">
+          <a href="?location=Trincity" class="blue-grey-text text-darken-2">Trincity</a>
+        </div>
+        <div class="chip blue-grey lighten-4" style="margin: 5px; font-weight: 500;">
+          <a href="?location=Arouca" class="blue-grey-text text-darken-2">Arouca</a>
+        </div>
+        <div class="chip blue-grey lighten-4" style="margin: 5px; font-weight: 500;">
+          <a href="?location=San Juan" class="blue-grey-text text-darken-2">San Juan</a>
+        </div>
+        <div class="chip blue-grey lighten-4" style="margin: 5px; font-weight: 500;">
+          <a href="?location=San Fernando" class="blue-grey-text text-darken-2">San Fernando</a>
+        </div>
+        <div class="chip blue-grey lighten-4" style="margin: 5px; font-weight: 500;">
+          <a href="?location=Port of Spain" class="blue-grey-text text-darken-2">Port of Spain</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row" style="margin-top: 30px;">
       <div class="col s12 m4" style="margin-bottom:10px;">
-        <a href="?filter=all" class="btn-large blue-grey lighten-1">ALL</a>
+        <a href="?filter=all" class="btn-large blue-grey darken-1 waves-effect waves-light">ALL PROPERTIES</a>
       </div>
       <div class="col s12 m4" style="margin-bottom:10px;">
-        <a href="?filter=rent" class="btn-large blue-grey lighten-1">RENT</a>
+        <a href="?filter=rent" class="btn-large blue-grey darken-1 waves-effect waves-light">FOR RENT</a>
       </div>
       <div class="col s12 m4" style="margin-bottom:10px;">
-        <a href="?filter=rate" class="btn-large blue-grey lighten-1">RATE</a>
+        <a href="?filter=rate" class="btn-large blue-grey darken-1 waves-effect waves-light">RATE & REVIEW</a>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Property Cards Grid -->
-<div class="section">
-  <div class="row">
-    {% if properties %}
-      {% for property in properties %}
-      <div class="col s12 m4 l4">
-        <div class="card" style="margin-bottom: 15px;">
-          <div class="card-image">
-            <img src="{{ property.image_url or '/static/uploads/apartment' ~ (property.id % 4 + 1) ~ '.jpg' }}" alt="{{ property.title }}" style="height: 250px; object-fit: cover; width: 100%;">
-            <span class="card-title" style="background: rgba(0,0,0,0.6); width: 100%; padding: 8px; font-weight: 500;">${{ property.price }} / month</span>
-          </div>
-          <div class="card-content">
-            <h5 class="purple-text text-accent-2" style="font-weight: bold;">{{ property.title }}</h5>
-            <p>{{ property.description }}</p>
-            {% if property.location %}
-              <p><strong>Location:</strong>
-                {{ property.location.street }},
-                {{ property.location.city }},
-                {{ property.location.state }}
-                {{ property.location.zip_code }}
-              </p>
-            {% endif %}
-            
-            <!-- Amenities Section -->
-            {% if property.listing_amenities %}
-              <h6 class="purple-text text-darken-1" style="font-weight: bold; margin-top: 20px;">Amenities</h6>
-              <div class="divider" style="margin-bottom: 15px;"></div>
-              <div class="row">
-                {% for listing_amenity in property.listing_amenities %}
-                  <div class="col s6">
-                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                      <i class="material-icons purple-text tiny" style="margin-right: 8px;">check_circle</i>
-                      <span>{{ listing_amenity.amenity.name }}</span>
+<div class="section" style="padding: 40px 0;">
+  <div class="container">
+    <div class="row" style="margin-bottom: 0;">
+      {% if properties %}
+        {% for property in properties %}
+        <div class="col s12 m6 l6" style="margin-bottom: 30px;">
+          <a href="{{ url_for('index_views.get_listing_page') }}?apt_id={{ property.id }}" class="card-link" style="color: inherit; text-decoration: none; display: block;">
+            <div class="card hoverable" style="border-radius: 10px; overflow: hidden; height: 100%; display: flex; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;">
+              <div class="card-image">
+                <img src="{{ property.image_url or '/static/uploads/apartment' ~ (property.id % 4 + 1) ~ '.jpg' }}" alt="{{ property.title }}" style="height: 240px; object-fit: cover; width: 100%;">
+                <span class="card-title" style="background: rgba(96, 125, 139, 0.7); width: 100%; padding: 12px 16px; font-weight: 500; font-size: 1.25rem;">${{ property.price }} / month</span>
+              </div>
+              <div class="card-content" style="padding: 20px 24px; flex-grow: 1; background-color: white;">
+                <h5 class="blue-grey-text text-darken-2" style="font-weight: bold; margin-top: 8px; margin-bottom: 20px; font-size: 1.5rem;">{{ property.title }}</h5>
+                
+                <div style="display: flex; margin-bottom: 20px;">
+                  <div style="display: flex; align-items: center; margin-right: 24px;">
+                    <i class="material-icons small blue-grey-text">hotel</i>
+                    <span style="font-size: 1.1rem;"><strong>{{ property.bedrooms }}</strong> Bed{% if property.bedrooms != 1 %}s{% endif %}</span>
+                  </div>
+                  <div style="display: flex; align-items: center;">
+                    <i class="material-icons small blue-grey-text">bathtub</i>
+                    <span style="font-size: 1.1rem;"><strong>{{ property.bathrooms }}</strong> Bath{% if property.bathrooms != 1 %}s{% endif %}</span>
+                  </div>
+                </div>
+                
+                <p style="margin-bottom: 16px; line-height: 1.5; font-size: 1.05rem;"><strong>Description:</strong> {{ property.description }}</p>
+                
+                {% if property.location %}
+                  <div style="display: flex; align-items: flex-start; margin-bottom: 20px; background-color: #eceff1; padding: 15px; border-radius: 8px;">
+                    <i class="material-icons small blue-grey-text">place</i>
+                    <div>
+                      <strong style="display: block; margin-bottom: 5px; color: #455a64;">Located at:</strong>
+                      <span style="font-size: 1.05rem;">{{ property.location.street }}, {{ property.location.city }}</span>
                     </div>
                   </div>
-                {% endfor %}
+                {% endif %}
+                
+                <!-- Amenities Preview (showing first 3) -->
+                {% if property.listing_amenities %}
+                  <div style="margin-top: 10px; background-color: #eceff1; padding: 15px; border-radius: 8px;">
+                    <p style="font-weight: 500; margin-bottom: 12px; color: #455a64; font-size: 1.1rem;">Amenities:</p>
+                    <div class="row" style="margin-bottom: 0;">
+                      {% for listing_amenity in property.listing_amenities[:3] %}
+                        <div class="col s12 m4" style="margin-bottom: 8px;">
+                          <div style="display: flex; align-items: center;">
+                            <i class="material-icons blue-grey-text" style="margin-right: 10px; font-size: 1.2rem;">check_circle</i>
+                            <span style="font-size: 1rem;">{{ listing_amenity.amenity.name }}</span>
+                          </div>
+                        </div>
+                      {% endfor %}
+                      {% if property.listing_amenities|length > 3 %}
+                        <div class="col s12" style="margin-top: 5px;">
+                          <span class="blue-grey-text" style="font-size: 0.95rem; font-style: italic;">+ {{ property.listing_amenities|length - 3 }} more amenities</span>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endif %}
               </div>
-            {% endif %}
-          </div>
-          <div class="card-action">
-            <a href="{{ url_for('index_views.get_listing_page') }}?apt_id={{ property.id }}" class="purple-text text-accent-2">VIEW DETAILS</a>
+            </div>
+          </a>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="col s12 center-align">
+          <div class="card-panel" style="padding: 30px; margin-top: 20px;">
+            <h5 class="grey-text">No properties available at this time.</h5>
+            <p>Please check back later or adjust your search criteria.</p>
           </div>
         </div>
-      </div>
-      {% endfor %}
-    {% else %}
-      <p>No properties available at this time.</p>
-    {% endif %}
+      {% endif %}
+    </div>
   </div>
 </div>
+
+<style>
+  .card-link:hover .card {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(96, 125, 139, 0.2);
+  }
+  
+  /* Style for select dropdown */
+  .browser-default {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    height: 36px;
+    padding: 0 10px;
+    width: 100%;
+    background-color: white;
+  }
+  
+  /* Range slider color */
+  input[type=range]::-webkit-slider-thumb {
+    background-color: #607d8b;
+  }
+  input[type=range]::-moz-range-thumb {
+    background-color: #607d8b;
+  }
+  input[type=range]::-ms-thumb {
+    background-color: #607d8b;
+  }
+
+  /* Filled in checkbox color */
+  [type="checkbox"].filled-in:checked+span:not(.lever):after {
+    border: 2px solid #607d8b;
+    background-color: #607d8b;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize dropdown
+    var dropdownTrigger = document.querySelector('.dropdown-trigger');
+    dropdownTrigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      var filtersDropdown = document.getElementById('filters-dropdown');
+      if (filtersDropdown.style.display === 'none') {
+        filtersDropdown.style.display = 'block';
+        this.querySelector('i:last-child').textContent = 'arrow_drop_up';
+      } else {
+        filtersDropdown.style.display = 'none';
+        this.querySelector('i:last-child').textContent = 'arrow_drop_down';
+      }
+    });
+    
+    // Price range slider
+    var slider = document.getElementById('price_range');
+    var priceDisplay = document.getElementById('price_display');
+    
+    if (slider && priceDisplay) {
+      slider.addEventListener('input', function() {
+        priceDisplay.textContent = '$' + this.value;
+      });
+    }
+  });
+</script>
 {% endblock %}
