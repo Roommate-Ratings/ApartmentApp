@@ -1,134 +1,272 @@
-
-
 {% extends "layout.html" %}
-{% block title %}Apartment Listings{% endblock %}
-{% block page %}Apartment Listings{% endblock %}
+{% block title %}Add Property{% endblock %}
+{% block page %}Add Property{% endblock %}
 
 {% block content %}
 
-<style>
-  body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f6f8;
-  margin: 0;
-  padding: 0;
-  color: #333;
-}
-
-/* Header Styling */
-header h1{
-  font-size: 1.8rem;
-  margin: 1rem 0;
-  font-family: 'Poppins', sans-serif;
-}
-
-/* Main Container */
-main {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-/* Form Group Styling */
-form > div {
-  margin-bottom: 1.5rem;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Label Styling */
-label {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-/* Input and Textarea Styling */
-input[type="text"],
-input[type="number"],
-input[type="file"],
-textarea {
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border 0.2s ease;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-textarea:focus {
-  border-color: #2f80ed;
-  outline: none;
-}
-
-/* Button Styling */
-button[type="submit"] {
-  background-color: #2f80ed;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-button[type="submit"]:hover {
-  background-color: #1c60c1;
-}
-</style>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Property</title>
-  <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
-  
-  <header style="background-color: #4a90e2; padding: 60px 0; text-align: center;">
-    <h1 style="color: white; font-weight: bold; font-size: 32px; margin: 0;">Add a New Property</h1>
-  </header>
-  <main>
-    <form action="/addproperty" method="POST" enctype="multipart/form-data">
-      <div>
-        <label for="title">Property Title:</label>
-        <input type="text" placeholder="" id="propertyTitle" name="propertyTitle" required>
+<div class="container-fluid" style="padding: 0 30px;">
+  <div class="row">
+    <div class="col s12">
+      <div class="card" style="margin-top: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+        <div class="card-content">
+          <div class="row" style="margin-bottom: 0;">
+            <div class="col s12 m8">
+              <span class="card-title purple-text text-darken-1" style="font-weight: bold; font-size: 24px;">
+                <i class="material-icons left">add_home</i>Add New Property
+              </span>
+            </div>
+            <div class="col s12 m4 right-align" style="padding-top: 6px;">
+              <div class="chip purple lighten-5" style="border: none;">
+                <i class="material-icons left tiny">info</i>
+                All fields marked with * are required
+              </div>
+            </div>
+          </div>
+          
+          <form action="/addproperty" method="POST" enctype="multipart/form-data">
+            <div class="row">
+              <!-- Left Column -->
+              <div class="col s12 m6">
+                <!-- Basic Information Section -->
+                <div class="section">
+                  <h5 class="purple-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
+                    <i class="material-icons" style="margin-right: 8px;">info</i>Basic Information
+                  </h5>
+                  <div class="divider" style="margin-bottom: 15px;"></div>
+                  
+                  <div class="row" style="margin-bottom: 0;">
+                    <div class="input-field col s12">
+                      <i class="material-icons prefix">title</i>
+                      <input type="text" id="propertyTitle" name="propertyTitle" class="validate" required maxlength="20">
+                      <label for="propertyTitle">Property Title *</label>
+                      <span class="helper-text">Maximum 20 characters</span>
+                    </div>
+                    
+                    <div class="input-field col s12 m6">
+                      <i class="material-icons prefix">attach_money</i>
+                      <input type="number" id="price" name="price" class="validate" required min="0" step="0.01">
+                      <label for="price">Monthly Rent ($) *</label>
+                    </div>
+                    
+                    <div class="input-field col s6 m3">
+                      <i class="material-icons prefix">hotel</i>
+                      <input type="number" id="bedrooms" name="bedrooms" class="validate" required min="0">
+                      <label for="bedrooms">Beds *</label>
+                    </div>
+                    
+                    <div class="input-field col s6 m3">
+                      <i class="material-icons prefix">bathtub</i>
+                      <input type="number" id="bathrooms" name="bathrooms" class="validate" required min="0" step="0.5">
+                      <label for="bathrooms">Baths *</label>
+                    </div>
+                    
+                    <div class="input-field col s12">
+                      <i class="material-icons prefix">description</i>
+                      <textarea id="description" name="description" class="materialize-textarea" required maxlength="120"></textarea>
+                      <label for="description">Description *</label>
+                      <span class="helper-text">Maximum 120 characters</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Location Section -->
+                <div class="section">
+                  <h5 class="purple-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
+                    <i class="material-icons" style="margin-right: 8px;">place</i>Location
+                  </h5>
+                  <div class="divider" style="margin-bottom: 15px;"></div>
+                  
+                  <div class="row" style="margin-bottom: 0;">
+                    <div class="input-field col s12">
+                      <i class="material-icons prefix">home</i>
+                      <input type="text" id="address" name="address" class="validate" required>
+                      <label for="address">Street Address *</label>
+                    </div>
+                    
+                    <div class="input-field col s12 m5">
+                      <i class="material-icons prefix">location_city</i>
+                      <input type="text" id="city" name="city" class="validate" required>
+                      <label for="city">City *</label>
+                    </div>
+                    
+                    <div class="input-field col s6 m4">
+                      <input type="text" id="state" name="state" class="validate" required>
+                      <label for="state">State *</label>
+                    </div>
+                    
+                    <div class="input-field col s6 m3">
+                      <input type="text" id="zipCode" name="zipCode" class="validate" required>
+                      <label for="zipCode">Zip *</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Right Column -->
+              <div class="col s12 m6">
+                <!-- Image Upload Section -->
+                <div class="section">
+                  <h5 class="purple-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
+                    <i class="material-icons" style="margin-right: 8px;">image</i>Property Image
+                  </h5>
+                  <div class="divider" style="margin-bottom: 15px;"></div>
+                  
+                  <div class="file-field input-field">
+                    <div class="btn purple waves-effect">
+                      <span><i class="material-icons left">file_upload</i>Upload</span>
+                      <input type="file" id="propertyImage" name="image" accept="image/*" title="Select property image">
+                    </div>
+                    <div class="file-path-wrapper">
+                      <input class="file-path validate" type="text" placeholder="Upload property image">
+                    </div>
+                  </div>
+                  
+                  <div class="card-panel grey lighten-4" style="margin-top: 10px; text-align: center; padding: 20px;">
+                    <i class="material-icons medium grey-text">photo_size_select_actual</i>
+                    <p class="grey-text">Image preview will appear here</p>
+                    <p class="grey-text text-darken-1" style="font-size: 0.85rem;">
+                      Recommended: 1200 x 800 pixels, JPEG or PNG format
+                    </p>
+                  </div>
+                </div>
+                
+                <!-- Amenities Section -->
+                <div class="section">
+                  <h5 class="purple-text text-darken-1" style="font-size: 18px; margin: 20px 0 10px 0; display: flex; align-items: center;">
+                    <i class="material-icons" style="margin-right: 8px;">hotel</i>Amenities
+                  </h5>
+                  <div class="divider" style="margin-bottom: 15px;"></div>
+                  
+                  <p class="grey-text" style="margin-bottom: 15px;">Select all that apply:</p>
+                  
+                  <div class="row" style="margin-left: -10px; margin-right: -10px;">
+                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
+                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                        <input type="checkbox" class="filled-in" name="amenities" value="1">
+                        <span>Air Conditioning</span>
+                      </label>
+                    </div>
+                    
+                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
+                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                        <input type="checkbox" class="filled-in" name="amenities" value="2">
+                        <span>Heating</span>
+                      </label>
+                    </div>
+                    
+                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
+                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                        <input type="checkbox" class="filled-in" name="amenities" value="3">
+                        <span>Washer/Dryer</span>
+                      </label>
+                    </div>
+                    
+                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
+                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                        <input type="checkbox" class="filled-in" name="amenities" value="4">
+                        <span>Dishwasher</span>
+                      </label>
+                    </div>
+                    
+                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
+                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                        <input type="checkbox" class="filled-in" name="amenities" value="5">
+                        <span>Parking</span>
+                      </label>
+                    </div>
+                    
+                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
+                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                        <input type="checkbox" class="filled-in" name="amenities" value="6">
+                        <span>Gym</span>
+                      </label>
+                    </div>
+                    
+                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
+                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                        <input type="checkbox" class="filled-in" name="amenities" value="7">
+                        <span>Pool</span>
+                      </label>
+                    </div>
+                    
+                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
+                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                        <input type="checkbox" class="filled-in" name="amenities" value="8">
+                        <span>Balcony</span>
+                      </label>
+                    </div>
+                    
+                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
+                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                        <input type="checkbox" class="filled-in" name="amenities" value="9">
+                        <span>Pets Allowed</span>
+                      </label>
+                    </div>
+                    
+                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
+                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                        <input type="checkbox" class="filled-in" name="amenities" value="10">
+                        <span>Furnished</span>
+                      </label>
+                    </div>
+                    
+                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
+                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                        <input type="checkbox" class="filled-in" name="amenities" value="11">
+                        <span>Wi-Fi</span>
+                      </label>
+                    </div>
+                    
+                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
+                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                        <input type="checkbox" class="filled-in" name="amenities" value="12">
+                        <span>Cable TV</span>
+                      </label>
+                    </div>
+                    
+                    <div class="col s6 m4 l4" style="padding: 5px 10px;">
+                      <label class="amenity-label" style="display: block; padding: 8px 10px; border-radius: 4px; background-color: #f5f5f5;">
+                        <input type="checkbox" class="filled-in" name="amenities" value="13">
+                        <span>Security System</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="card-action" style="background-color: #f9f9f9; border-radius: 0 0 8px 8px; padding: 20px; margin: 20px -20px -20px -20px;">
+              <div class="row" style="margin-bottom: 0;">
+                <div class="col s12 right-align">
+                  <a href="{{ url_for('index_views.get_listing_page') }}" class="btn-flat waves-effect">Cancel</a>
+                  <button type="submit" class="btn-large waves-effect waves-light purple" style="margin-left: 10px;">
+                    <i class="material-icons left">add_circle</i>Add Property
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
-      <div>
-        <label for="address">Address:</label>
-        <input type="text" id="address" name="address" required>
-      </div>
-      <div>
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city" required>
-      </div>
-      <div>
-        <label for="state">State:</label>
-        <input type="text" id="state" name="state" required>
-      </div>
-      <div>
-        <label for="zipCode">Zip Code:</label>
-        <input type="text" id="zipCode" name="zipCode" required>
-      </div>
-      <div>
-        <label for="price">Price:</label>
-        <input type="number" id="price" name="price" required>
-      </div>
-      <div>
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" rows="4" required></textarea>
-      </div>
-      <div>
-        <label for="image">Property Image:</label>
-        <input type="file" id="image" name="image" accept="image/*">
-      </div>
-      <div>
-        <button type="submit">Add Property</button>
-      </div>
-    </form>
+    </div>
+  </div>
+</div>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Preview uploaded image
+    document.getElementById('propertyImage').onchange = function(e) {
+      var preview = document.querySelector('.card-panel');
+      if (this.files && this.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          preview.innerHTML = '<img src="' + e.target.result + '" style="max-width: 100%; max-height: 200px;">';
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    };
+  });
+</script>
 
-    {% endblock %}
+{% endblock %}
