@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, request, send_from_directory, jsonify, redirect, url_for, session, make_response
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
 
+from App.database import db
 from App.controllers import (
     initialize
 )
 from App.models import Listing, Landlord, User
+from App.models.review import Review
 
 index_views = Blueprint('index_views', __name__, template_folder='../templates')
 
@@ -60,7 +62,70 @@ def get_listing_page():
     apartments = Listing.query.all()
     apt_id = request.args.get('apt_id')
     selected_apartment = Listing.query.get(apt_id) if apt_id else None
-    return render_template('listings.html', apartments=apartments, selected_apartment=selected_apartment)
+    
+    # Get current user from JWT if available
+    current_user = None
+    try:
+        # Try to verify JWT but don't fail if not present (optional=True)
+        verify_jwt_in_request(optional=True)
+        username = get_jwt_identity()
+        if username:
+            current_user = User.query.filter_by(username=username).first()
+    except:
+        # User is not logged in, continue without user info
+        pass
+        
+    return render_template('listings.html', 
+                          apartments=apartments, 
+                          selected_apartment=selected_apartment,
+                          current_user=current_user)
+
+def add_review(apt_id, comment, rating):
+    apartment = Listing.query.get(apt_id)
+    if not apartment:
+        return "Apartment not found", 404
+    
+    # Get current user id (assuming user is logged in)
+    user_id = get_jwt_identity() if get_jwt_identity() else 1  # Default to user 1 if not logged in
+    
+    review = Review(
+        listing_id=apt_id,
+        user_id=user_id,
+        rating=int(rating),
+        comment=comment
+    )
+    
+    db.session.add(review)
+    db.session.commit()
+    return True
+
+@index_views.route('/addreview', methods=['POST'])
+@jwt_required()
+def add_review_page():
+    # Get current user
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+    
+    # Check if user is a tenant
+    if not user or user.role != 'tenant':
+        return "Unauthorized: Only verified tenants can leave reviews", 401
+        
+    apt_id = request.form.get('apt_id')
+    comment = request.form.get('comment')
+    rating = request.form.get('rating')
+    
+    # Use user's actual ID for the review
+    review = Review(
+        listing_id=apt_id,
+        user_id=user.id,
+        rating=int(rating),
+        comment=comment
+    )
+    
+    db.session.add(review)
+    db.session.commit()
+    
+    return redirect(url_for('index_views.get_listing_page', apt_id=apt_id))
 
 @index_views.route('/addproperty', methods=['GET', 'POST'])
 @jwt_required()
