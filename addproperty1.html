@@ -1,102 +1,133 @@
-
 <!DOCTYPE html>
 <html lang="en">
+ 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Add Property - Apartment Rating</title>
+  <link rel="stylesheet" href="/static/styles.css">
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      width: 90%;
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 30px;
-      background-color: #ffffff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      border-radius: 12px;
-    }
-
-    h2 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: 600;
-      color: #444;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    textarea {
-      resize: vertical;
-    }
-
-    button {
-      margin-top: 25px;
-      width: 100%;
-      padding: 12px;
-      background-color: #2d89ef;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #1b6ac9;
-    }
-
-    .success {
-      text-align: center;
-      color: green;
-      margin-top: 15px;
-    }
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f8;
+    margin: 0;
+    padding: 0;
+    color: #333;
+  }
+  
+  /* Header Styling */
+  header h1{
+    font-size: 1.8rem;
+    margin: 1rem 0;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  /* Main Container */
+  main {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Form Group Styling */
+  form > div {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Label Styling */
+  label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  /* Input and Textarea Styling */
+  input[type="text"],
+  input[type="number"],
+  input[type="file"],
+  textarea {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border 0.2s ease;
+  }
+  
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  textarea:focus {
+    border-color: #2f80ed;
+    outline: none;
+  }
+  
+  /* Button Styling */
+  button[type="submit"] {
+    background-color: #2f80ed;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #1c60c1;
+  }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Add a Property</h2>
-    <!-- In Flask: method="POST" and action="/add-property" -->
-    <form method="POST">
-      <label for="property_name">Property Name:</label>
-      <input type="text" id="property_name" name="property_name" required>
+  
+  <header style="background-color: #4a90e2; padding: 60px 0; text-align: center;">
+    <h1 style="color: white; font-weight: bold; font-size: 32px; margin: 0;">Add a New Property</h1>
+  </header>
 
-      <label for="location">Location:</label>
-      <input type="text" id="location" name="location" required>
-
-      <label for="price">Monthly Rent (TT):</label>
-      <input type="number" id="price" name="price" required>
-
-      <label for="description">Description:</label>
-      <textarea id="description" name="description" rows="5" required></textarea>
-
-      <button type="submit">Submit Property</button>
+  <main>
+    <form action="/addproperty" method="POST">
+      <div>
+        <label for="title">Property Title:</label>
+        <input type="text" placeholder="" id="propertyTitle" name="propertyTitle" required>
+      </div>
+      <div>
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required>
+      </div>
+      <div>
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" required>
+      </div>
+      <div>
+        <label for="state">State:</label>
+        <input type="text" id="state" name="state" required>
+      </div>
+      <div>
+        <label for="zipCode">Zip Code:</label>
+        <input type="text" id="zipCode" name="zipCode" required>
+      </div>
+      <div>
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" required>
+      </div>
+      <div>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
+      </div>
+      <div>
+        <label for="image">Property Image:</label>
+        <input type="file" id="image" name="image" accept="image/*">
+      </div>
+      <div>
+        <button type="submit">Add Property</button>
+      </div>
     </form>
-
-   
-
-  </div>
+  </main>
 </body>
 </html>
+
+
+
