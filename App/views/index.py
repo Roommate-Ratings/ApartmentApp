@@ -1,8 +1,10 @@
-from flask import Blueprint, redirect, render_template, request, send_from_directory, jsonify, url_for, session
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from App.controllers import create_user, initialize
-from App.models import Listing
-from App.models.Landlord import Landlord
+from flask import Blueprint, render_template, request, send_from_directory, jsonify, redirect, url_for, session, make_response
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
+from App.controllers import (
+    initialize
+)
+from App.models import Listing, Landlord, User
 
 index_views = Blueprint('index_views', __name__, template_folder='../templates')
 
@@ -72,11 +74,17 @@ def add_property_page():
         price = float(request.form.get('price'))
         description = request.form.get('description')
 
-        user_id = get_jwt_identity()
-        landlord = Landlord.query.get(user_id)  # Pull from the DB directly
-
-        if not landlord or landlord.role != 'landlord':
+        username = get_jwt_identity()
+        user = User.query.filter_by(username=username).first()
+        
+        if not user or user.role != 'landlord':
             return "Unauthorized", 401
+            
+        # Get the landlord object
+        landlord = Landlord.query.get(user.id)
+        
+        if not landlord:
+            return "Landlord record not found", 404
 
         listing = landlord.create_listing(
             title=title,

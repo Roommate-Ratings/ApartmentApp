@@ -7,6 +7,7 @@ class Landlord(User):
     __tablename__ = 'landlords'
 
     id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    listings = db.relationship('Listing', backref='landlord', lazy=True)
 
     __mapper_args__ = {
         'polymorphic_identity': 'landlord',

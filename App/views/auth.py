@@ -79,7 +79,6 @@ def login_user(username, password):
         set_access_cookies(response, token)
         flash('Login Successful')
         
-
         return response
 
     flash('Bad username or password given')
@@ -101,8 +100,9 @@ def logout_action():
     return response
 
 @auth_views.route('/myproperties')
+@auth_views.route('/myproperties/<int:landlord_id>')
 @jwt_required()
-def my_properties():
+def my_properties(landlord_id=None):
     username = get_jwt_identity()
     user = User.query.filter_by(username=username).first()
 
@@ -110,8 +110,11 @@ def my_properties():
         flash("You are not authorized to view this page.")
         return render_template('myproperties.html', is_authenticated=True, is_landlord=False, current_user=user, properties=[])
 
+    # Use the provided landlord_id if available, otherwise use the current user's id
+    landlord_id_to_use = landlord_id if landlord_id else user.id
+    
     # Now safely cast or refetch as a Landlord if needed
-    landlord = Landlord.query.get(user.id)
+    landlord = Landlord.query.get(landlord_id_to_use)
     if not landlord:
         flash("Landlord record not found.")
         return render_template('myproperties.html', is_authenticated=True, is_landlord=False, current_user=user, properties=[])
@@ -129,8 +132,8 @@ def my_properties():
 @auth_views.route('/search', methods=['GET'])
 @jwt_required()
 def search_page():
-    user_id = get_jwt_identity() 
-    user = User.query.get(user_id)   
+    username = get_jwt_identity() 
+    user = User.query.filter_by(username=username).first()   
     search_term = request.args.get('query')
     results = user.search_listings(search_term)
     return render_template('search.html', user=user, results=results)

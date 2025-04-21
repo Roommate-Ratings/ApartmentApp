@@ -5,7 +5,7 @@ from App.models import User
 def login(username, password):
     user = User.query.filter_by(username=username).first()
     if user and user.check_password(password):
-        return create_access_token(identity=user)
+        return create_access_token(identity=user.username)
     return None
 
 
@@ -15,15 +15,14 @@ def setup_jwt(app):
   # configure's flask jwt to resolve get_current_identity() to the corresponding user's ID
   @jwt.user_identity_loader
   def user_identity_lookup(identity):
-    user = User.query.filter_by(username=identity).one_or_none()
-    if user:
-        return str(user.username)
+    if isinstance(identity, str):
+        return identity
     return None
 
   @jwt.user_lookup_loader
   def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
-    return User.query.get(identity)
+    return User.query.filter_by(username=identity).first()
 
   return jwt
 
@@ -37,8 +36,8 @@ def add_auth_context(app):
     def inject_user():
         try:
             verify_jwt_in_request()
-            user_id = get_jwt_identity()
-            current_user = User.query.get(user_id)
+            username = get_jwt_identity()
+            current_user = User.query.filter_by(username=username).first()
             is_authenticated = current_user is not None
             is_landlord = current_user.role == 'landlord' if current_user else False
             landlord_id = current_user.id if is_landlord else None
