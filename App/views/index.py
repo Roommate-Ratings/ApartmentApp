@@ -176,6 +176,87 @@ def add_property_page():
     seed_amenities()
     return render_template('addproperty.html')
 
+@index_views.route('/editproperty/<int:property_id>', methods=['GET', 'POST'])
+@jwt_required()
+def edit_property_page(property_id):
+    # Get the listing from the database
+    listing = Listing.query.get_or_404(property_id)
+    
+    # Check if the current user is the owner of the property
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+    
+    if not user or user.role != 'landlord' or listing.landlord_id != user.id:
+        return "Unauthorized: You can only edit your own properties", 401
+    
+    # Get all available amenities
+    all_amenities = Amenities.query.all()
+    
+    # Get the amenities that this listing already has
+    listing_amenity_ids = [la.amenity_id for la in ListingAmenity.query.filter_by(listing_id=property_id).all()]
+    
+    if request.method == 'POST':
+        # Update listing with form data
+        listing.title = request.form.get('propertyTitle')
+        listing.price = float(request.form.get('price'))
+        listing.description = request.form.get('description')
+        listing.bedrooms = int(request.form.get('bedrooms', 0))
+        listing.bathrooms = float(request.form.get('bathrooms', 0))
+        
+        # Update location info
+        if listing.location:
+            listing.location.street = request.form.get('address')
+            listing.location.city = request.form.get('city')
+        else:
+            # Create a new location if it doesn't exist
+            location = Location(
+                street=request.form.get('address'),
+                city=request.form.get('city'),
+                state="",
+                zip_code="",
+                listing_id=listing.id
+            )
+            db.session.add(location)
+        
+        # Handle image upload if a new image is provided
+        if 'image' in request.files and request.files['image'].filename != '':
+            image_file = request.files['image']
+            # Create uploads directory if it doesn't exist
+            uploads_dir = os.path.join('App', 'static', 'uploads')
+            os.makedirs(uploads_dir, exist_ok=True)
+            
+            # Secure the filename and save the file
+            filename = secure_filename(image_file.filename)
+            file_path = os.path.join(uploads_dir, filename)
+            image_file.save(file_path)
+            
+            # Create a URL for the image
+            listing.image_url = url_for('static', filename=f'uploads/{filename}')
+
+        # Handle amenities
+        # First remove all existing amenities
+        ListingAmenity.query.filter_by(listing_id=property_id).delete()
+        
+        # Then add the new selections
+        amenities = request.form.getlist('amenities')
+        if amenities:
+            for amenity_id in amenities:
+                listing_amenity = ListingAmenity(
+                    listing_id=listing.id,
+                    amenity_id=int(amenity_id)
+                )
+                db.session.add(listing_amenity)
+        
+        db.session.commit()
+        return redirect(url_for('index_views.get_listing_page', apt_id=listing.id))
+        
+    # For GET request, render the edit form with the current property data
+    return render_template(
+        'editproperty.html', 
+        listing=listing, 
+        all_amenities=all_amenities,
+        listing_amenity_ids=listing_amenity_ids
+    )
 
 @index_views.route('/init', methods=['GET'])
 def init():
