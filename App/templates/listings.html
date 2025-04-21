@@ -31,6 +31,23 @@
   <div class="col s6">
     {% if selected_apartment %}
       <h5>{{ selected_apartment.title }}</h5>
+      
+      {% if selected_apartment.image_url %}
+        <div class="card" style="margin-bottom: 15px;">
+          <div class="card-image">
+            <img src="{{ selected_apartment.image_url }}" alt="{{ selected_apartment.title }}" style="max-height: 300px; object-fit: cover;">
+            <span class="card-title" style="background: rgba(0,0,0,0.5); width: 100%; padding: 8px;">${{ selected_apartment.price }} / month</span>
+          </div>
+        </div>
+      {% else %}
+        <div class="card" style="margin-bottom: 15px;">
+          <div class="card-image">
+            <img src="https://placehold.co/600x400?text=No+Image+Available" alt="No Image Available" style="max-height: 300px; object-fit: cover;">
+            <span class="card-title" style="background: rgba(0,0,0,0.5); width: 100%; padding: 8px;">${{ selected_apartment.price }} / month</span>
+          </div>
+        </div>
+      {% endif %}
+      
       <p><strong>Location:</strong>
         {{ selected_apartment.location.street }},
         {{ selected_apartment.location.city }},
@@ -38,9 +55,26 @@
         {{ selected_apartment.location.zip_code }}
       </p>
       <p>{{ selected_apartment.description }}</p>
-      {% if selected_apartment.image_url %}
-        <img src="{{ selected_apartment.image_url }}" alt="Apartment Image" style="max-width: 100%;">
-      {% endif %}
+      
+      <!-- Amenities Section -->
+      <div class="section">
+        <h6 class="purple-text text-darken-1" style="font-weight: bold; margin-top: 20px;">Amenities</h6>
+        <div class="divider" style="margin-bottom: 15px;"></div>
+        {% if selected_apartment.amenities.all() %}
+          <div class="row">
+            {% for listing_amenity in selected_apartment.amenities %}
+              <div class="col s6">
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                  <i class="material-icons purple-text tiny" style="margin-right: 8px;">check_circle</i>
+                  <span>{{ listing_amenity.amenity.name }}</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p>No amenities listed for this property.</p>
+        {% endif %}
+      </div>
     {% else %}
       <h5>Select an apartment to view details</h5>
     {% endif %}

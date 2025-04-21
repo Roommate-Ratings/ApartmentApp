@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, send_from_directory, jsonify, redirect, url_for, session, make_response
 from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
+import os
+from werkzeug.utils import secure_filename
 
 from App.database import db
 from App.controllers import (
@@ -7,6 +9,8 @@ from App.controllers import (
 )
 from App.models import Listing, Landlord, User
 from App.models.review import Review
+from App.models.Amenities import Amenities
+from App.models.ListingAmenity import ListingAmenity
 
 index_views = Blueprint('index_views', __name__, template_folder='../templates')
 
@@ -138,6 +142,25 @@ def add_property_page():
         zip_code = request.form.get('zipCode')
         price = float(request.form.get('price'))
         description = request.form.get('description')
+        bedrooms = int(request.form.get('bedrooms', 0))
+        bathrooms = float(request.form.get('bathrooms', 0))
+        
+        # Handle image upload
+        image_url = None
+        if 'image' in request.files:
+            image_file = request.files['image']
+            if image_file.filename != '':
+                # Create uploads directory if it doesn't exist
+                uploads_dir = os.path.join('App', 'static', 'uploads')
+                os.makedirs(uploads_dir, exist_ok=True)
+                
+                # Secure the filename and save the file
+                filename = secure_filename(image_file.filename)
+                file_path = os.path.join(uploads_dir, filename)
+                image_file.save(file_path)
+                
+                # Create a URL for the image
+                image_url = url_for('static', filename=f'uploads/{filename}')
 
         username = get_jwt_identity()
         user = User.query.filter_by(username=username).first()
@@ -155,16 +178,35 @@ def add_property_page():
             title=title,
             description=description,
             price=price,
-            bedrooms=0,
-            bathrooms=0,
+            bedrooms=bedrooms,
+            bathrooms=bathrooms,
             street=address,
             city=city,
             state=state,
             zip_code=zip_code
         )
+        
+        # Set the image URL if an image was uploaded
+        if image_url:
+            listing.image_url = image_url
+        
+        # Handle amenities
+        amenities = request.form.getlist('amenities')
+        if amenities:
+            for amenity_id in amenities:
+                # Create a new ListingAmenity association
+                listing_amenity = ListingAmenity(
+                    listing_id=listing.id,
+                    amenity_id=int(amenity_id)
+                )
+                db.session.add(listing_amenity)
+        
+        db.session.commit()
 
         return redirect(url_for('index_views.get_listing_page', apt_id=listing.id))
 
+    # Make sure amenities exist before showing the form
+    seed_amenities()
     return render_template('addproperty.html')
 
 
@@ -176,3 +218,27 @@ def init():
 @index_views.route('/health', methods=['GET'])
 def health_check():
     return jsonify({'status':'healthy'})
+
+@index_views.route('/seed-amenities', methods=['GET'])
+def seed_amenities():
+    # Define default amenities if none exist
+    if Amenities.query.count() == 0:
+        default_amenities = [
+            "Air Conditioning", "Heating", "Washer/Dryer", "Dishwasher", 
+            "Parking", "Gym", "Pool", "Balcony", "Pets Allowed", 
+            "Furnished", "Wi-Fi", "Cable TV", "Security System"
+        ]
+        
+        for name in default_amenities:
+            amenity = Amenities(name=name)
+            db.session.add(amenity)
+        
+        db.session.commit()
+        return jsonify(message="Default amenities seeded!")
+    
+    return jsonify(message="Amenities already exist!")
+
+@index_views.route('/amenities', methods=['GET'])
+def get_amenities():
+    amenities = Amenities.query.all()
+    return jsonify([amenity.get_json() for amenity in amenities])

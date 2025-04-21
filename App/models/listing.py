@@ -9,6 +9,7 @@ class Listing(db.Model):
     bedrooms = db.Column(db.Integer, nullable=False)
     bathrooms = db.Column(db.Integer, nullable=False)
     landlord_id = db.Column(db.Integer, db.ForeignKey('landlords.id'), nullable=False)
+    image_url = db.Column(db.String(255), nullable=True)
 
     
     location = db.relationship('Location', backref='listing', uselist=False, lazy=True)
