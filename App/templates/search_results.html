@@ -8,7 +8,7 @@
   <div class="col s12 m4 l3">
     <div class="card">
       <div class="card-content">
-        <span class="card-title purple-text">Advanced Search</span>
+        <span class="card-title blue-grey-text">Advanced Search</span>
         
         <form action="{{ url_for('index_views.search_listings') }}" method="GET">
           <!-- Text Search -->
@@ -70,7 +70,7 @@
           </div>
           
           <!-- Submit Button -->
-          <button class="btn purple waves-effect waves-light" type="submit" style="width: 100%;">
+          <button class="btn blue-grey darken-1 waves-effect waves-light" type="submit" style="width: 100%;">
             <i class="material-icons left">search</i>Search
           </button>
           
@@ -109,7 +109,7 @@
                 {% else %}
                   <img src="https://via.placeholder.com/300x200?text=No+Image" alt="No Image" style="height: 200px; object-fit: cover;">
                 {% endif %}
-                <span class="card-title" style="background-color: rgba(0,0,0,0.5); width: 100%; padding: 8px; font-size: 1.2rem;">${{ "%.0f"|format(listing.price) }}/mo</span>
+                <span class="card-title" style="background-color: rgba(96, 125, 139, 0.7); width: 100%; padding: 8px; font-size: 1.2rem;">${{ "%.0f"|format(listing.price) }}/mo</span>
               </div>
               <div class="card-content" style="min-height: 150px;">
                 <span class="card-title truncate" style="margin-bottom: 10px; font-size: 1.2rem;">{{ listing.title }}</span>
@@ -122,13 +122,13 @@
                 </div>
                 {% if listing.amenities.count() > 0 %}
                   <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
-                    <i class="tiny material-icons left">check_circle</i>
+                    <i class="tiny material-icons left blue-grey-text">check_circle</i>
                     {{ listing.amenities.count() }} amenities
                   </div>
                 {% endif %}
               </div>
               <div class="card-action">
-                <a href="{{ url_for('index_views.get_listing_page', apt_id=listing.id) }}" class="purple-text">View Details</a>
+                <a href="{{ url_for('index_views.get_listing_page', apt_id=listing.id) }}" class="blue-grey-text">View Details</a>
               </div>
             </div>
           </div>
@@ -145,6 +145,23 @@
     {% endif %}
   </div>
 </div>
+
+<style>
+  /* Customize checkboxes to match blue-grey theme */
+  [type="checkbox"].filled-in:checked+span:not(.lever):after {
+    border: 2px solid #607d8b;
+    background-color: #607d8b;
+  }
+  
+  /* Style select dropdowns */
+  .select-wrapper input.select-dropdown:focus {
+    border-bottom: 1px solid #607d8b;
+  }
+  
+  .dropdown-content li>a, .dropdown-content li>span {
+    color: #607d8b;
+  }
+</style>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {

@@ -42,6 +42,8 @@ class Landlord(User):
         location = Location(
             street=street,
             city=city,
+            state=state,
+            zip_code=zip_code,
             listing_id=listing.id
         )
         db.session.add(location)
