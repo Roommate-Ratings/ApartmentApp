@@ -51,17 +51,37 @@
     <h5>Reviews</h5>
     {% if selected_apartment and selected_apartment.reviews %}
       {% for review in selected_apartment.reviews %}
-        <div class="card-panel grey lighten-4" style="margin-bottom: 10px;">
-          <p>{{ review.comment }}</p>
-          <span class="right grey-text">{{ review.rating }}/5</span>
+        <div class="card-panel white" style="margin-bottom: 15px; border-left: 4px solid #9c27b0; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+          <div class="row" style="margin-bottom: 0;">
+            <div class="col s12">
+              <span class="purple-text" style="font-weight: 500;">{{ review.tenant.username }}</span>
+              <div class="right">
+                {% for i in range(review.rating) %}
+                  <i class="material-icons tiny amber-text">star</i>
+                {% endfor %}
+                {% for i in range(5 - review.rating) %}
+                  <i class="material-icons tiny grey-text text-lighten-2">star</i>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="row" style="margin-bottom: 0;">
+            <div class="col s12">
+              <p style="font-size: 1.1em; margin: 10px 0;">{{ review.comment }}</p>
+              <p class="grey-text" style="font-size: 0.8em; margin: 0;">
+                {{ review.date.strftime('%B %d, %Y') if review.date else 'Date not available' }}
+              </p>
+            </div>
+          </div>
         </div>
       {% endfor %}
     {% else %}
       <p>No reviews for this apartment yet.</p>
     {% endif %}
 
-    {% if selected_apartment %}
-    <form method="POST" action="{{ url_for('user.index_view', apt_id=selected_apartment.id) }}" style="margin-top: 20px;">
+    {% if selected_apartment and current_user and current_user.role == 'tenant' %}
+    <form method="POST" action="{{ url_for('index_views.add_review_page') }}" style="margin-top: 20px;">
+      <input type="hidden" name="apt_id" value="{{ selected_apartment.id }}">
       <div class="input-field">
         <input type="text" name="comment" placeholder="Enter your review" required>
       </div>
@@ -70,6 +90,8 @@
       </div>
       <button class="btn purple">Add</button>
     </form>
+    {% elif selected_apartment %}
+      <p class="grey-text">You must be logged in as a tenant to leave a review.</p>
     {% endif %}
   </div>
 </div>
