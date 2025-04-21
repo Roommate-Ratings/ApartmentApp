@@ -55,10 +55,10 @@ def index_page():
 @index_views.route('/listings', methods=['GET'])
 def get_listing_page():
     apartments = Listing.query.all()
-    return render_template(
-        'listings.html', 
-        apartments=apartments
-        )
+    apt_id = request.args.get('apt_id')
+    selected_apartment = Listing.query.get(apt_id) if apt_id else None
+    return render_template('listings.html', apartments=apartments, selected_apartment=selected_apartment)
+
 
 
 @index_views.route('/addproperty', methods=['GET'])
