@@ -5,7 +5,6 @@
 {% block content %}
 
 <div class="row" style="margin-top: 20px;">
-  
   <!-- Left Column: List of Apartments -->
   <div class="col s3">
     <h5>Apartments</h5>
@@ -13,13 +12,13 @@
       {% if apartments %}
         {% for apt in apartments %}
           <li class="collection-item">
-            <strong>{{ apt.title }}</strong><br>
-            <span class="grey-text">{{ apt.location }}</span>
-            <a href="{{ url_for('listings_bp.view_listing', apt_id=apt.id) }}"
-               class="secondary-content purple-text text-accent-2"
-               style="font-weight: bold;">
-              View
-            </a>
+            <a href="{{ url_for('index_views.get_listing_page') }}?apt_id={{ apt.id }}"
+               class="purple-text text-accent-2" style="font-weight: bold;">
+              {{ apt.title }}
+            </a><br>
+            <span class="grey-text">
+              {{ apt.location.street }}, {{ apt.location.city }}, {{ apt.location.state }} {{ apt.location.zip_code }}
+            </span>
           </li>
         {% endfor %}
       {% else %}
@@ -32,8 +31,13 @@
   <div class="col s6">
     {% if selected_apartment %}
       <h5>{{ selected_apartment.title }}</h5>
-      <p><strong>Location:</strong> {{ selected_apartment.location }}</p>
-      <p>{{ selected_apartment.details or selected_apartment.description }}</p>
+      <p><strong>Location:</strong>
+        {{ selected_apartment.location.street }},
+        {{ selected_apartment.location.city }},
+        {{ selected_apartment.location.state }}
+        {{ selected_apartment.location.zip_code }}
+      </p>
+      <p>{{ selected_apartment.description }}</p>
       {% if selected_apartment.image_url %}
         <img src="{{ selected_apartment.image_url }}" alt="Apartment Image" style="max-width: 100%;">
       {% endif %}
@@ -56,9 +60,8 @@
       <p>No reviews for this apartment yet.</p>
     {% endif %}
 
-    <!-- If there's a selected apt, allow new reviews -->
     {% if selected_apartment %}
-    <form method="POST" action="{{ url_for('listings_bp.add_review', apt_id=selected_apartment.id) }}" style="margin-top: 20px;">
+    <form method="POST" action="{{ url_for('user.index_view', apt_id=selected_apartment.id) }}" style="margin-top: 20px;">
       <div class="input-field">
         <input type="text" name="comment" placeholder="Enter your review" required>
       </div>
@@ -69,7 +72,7 @@
     </form>
     {% endif %}
   </div>
-
 </div>
+
 
 {% endblock %}

@@ -1,4 +1,6 @@
 from App.database import db
+from App.models.listing import Listing
+__tablename__ = 'amenities'
 
 class Amenities(db.Model):
     id = db.Column(db.Integer, primary_key=True)
