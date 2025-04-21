@@ -28,17 +28,41 @@
     {% if properties %}
       {% for property in properties %}
       <div class="col s12 m4 l4">
-        <div class="card hoverable" style="margin: 5px;">
+        <div class="card" style="margin-bottom: 15px;">
           <div class="card-image">
-            <img src="{{ property.image_url or 'https://via.placeholder.com/350x200' }}" alt="{{ property.title }}">
+            <img src="{{ property.image_url or '/static/uploads/apartment' ~ (property.id % 4 + 1) ~ '.jpg' }}" alt="{{ property.title }}" style="height: 250px; object-fit: cover; width: 100%;">
+            <span class="card-title" style="background: rgba(0,0,0,0.6); width: 100%; padding: 8px; font-weight: 500;">${{ property.price }} / month</span>
           </div>
           <div class="card-content">
-            <span class="card-title" style="font-size:1.3rem;">{{ property.title }}</span>
+            <h5 class="purple-text text-accent-2" style="font-weight: bold;">{{ property.title }}</h5>
             <p>{{ property.description }}</p>
-            <p><strong>Location:</strong> {{ property.location }}</p>
+            {% if property.location %}
+              <p><strong>Location:</strong>
+                {{ property.location.street }},
+                {{ property.location.city }},
+                {{ property.location.state }}
+                {{ property.location.zip_code }}
+              </p>
+            {% endif %}
+            
+            <!-- Amenities Section -->
+            {% if property.listing_amenities %}
+              <h6 class="purple-text text-darken-1" style="font-weight: bold; margin-top: 20px;">Amenities</h6>
+              <div class="divider" style="margin-bottom: 15px;"></div>
+              <div class="row">
+                {% for listing_amenity in property.listing_amenities %}
+                  <div class="col s6">
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                      <i class="material-icons purple-text tiny" style="margin-right: 8px;">check_circle</i>
+                      <span>{{ listing_amenity.amenity.name }}</span>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
           </div>
           <div class="card-action">
-            <a href="/property/{{ property.id }}">VIEW DETAILS</a>
+            <a href="{{ url_for('index_views.get_listing_page') }}?apt_id={{ property.id }}" class="purple-text text-accent-2">VIEW DETAILS</a>
           </div>
         </div>
       </div>
