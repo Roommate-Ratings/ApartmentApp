@@ -2,6 +2,7 @@ from .user import create_user
 from .landlord import create_landlord
 from .tenant import create_tenant
 from App.database import db
+from App.models.Landlord import Landlord
 
 
 def initialize():

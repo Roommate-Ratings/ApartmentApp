@@ -100,26 +100,30 @@ def logout_action():
     unset_jwt_cookies(response)
     return response
 
-@auth_views.route('/myproperties/<int:landlord_id>')
+@auth_views.route('/myproperties')
 @jwt_required()
-def my_properties(landlord_id):
-    user_id = get_jwt_identity()  # Get the current user's ID from the JWT
-    if not user_id or user_id != landlord_id:  # Check if the user is authenticated and matches the landlord ID
-        flash("You are not authorized to view this page.")
-        return render_template('myproperties.html', is_authenticated=False, is_landlord=False, current_user=None, properties=[])
+def my_properties():
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
 
-    landlord = Landlord.query.get(landlord_id)
+    if not user or user.role != 'landlord':
+        flash("You are not authorized to view this page.")
+        return render_template('myproperties.html', is_authenticated=True, is_landlord=False, current_user=user, properties=[])
+
+    # Now safely cast or refetch as a Landlord if needed
+    landlord = Landlord.query.get(user.id)
     if not landlord:
-        flash("Landlord not found.")
-        return render_template('myproperties.html', is_authenticated=True, is_landlord=False, current_user=None, properties=[])
+        flash("Landlord record not found.")
+        return render_template('myproperties.html', is_authenticated=True, is_landlord=False, current_user=user, properties=[])
 
     return render_template(
         'myproperties.html',
         is_authenticated=True,
         is_landlord=True,
         current_user=landlord,
-        properties=landlord.listings  # Access the listings relationship
+        properties=landlord.listings
     )
+
 
 
 @auth_views.route('/search', methods=['GET'])

@@ -72,14 +72,11 @@ def add_property_page():
         price = float(request.form.get('price'))
         description = request.form.get('description')
 
-    
-        landlord_id = session.get('landlord_id')
-        if not landlord_id:
-            return "Unauthorized", 401
+        user_id = get_jwt_identity()
+        landlord = Landlord.query.get(user_id)  # Pull from the DB directly
 
-        landlord = Landlord.query.get(landlord_id)
-        if not landlord:
-            return "Landlord not found", 404
+        if not landlord or landlord.role != 'landlord':
+            return "Unauthorized", 401
 
         listing = landlord.create_listing(
             title=title,
