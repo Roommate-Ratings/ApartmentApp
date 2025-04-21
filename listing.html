@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+{% block title %}Apartment Listings{% endblock %}
+{% block page %}Apartment Listings{% endblock %}
+
+{% block styles %}
+<style>
+  /* Only affects listings.html */
+
+  .collection-item a {
+    font-size: 1.2rem;
+    color: #5e35b1;
+  }
+
+  .collection-item span {
+    font-size: 0.9rem;
+    color: #616161;
+  }
+
+  .apartment-details h5 {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .apartment-details p {
+    font-size: 1rem;
+    color: #444;
+  }
+
+  .apartment-details img {
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+
+  .review-card {
+    padding: 10px;
+    border-left: 4px solid #7e57c2;
+    background-color: #f3f3f3;
+    margin-bottom: 15px;
+    border-radius: 5px;
+  }
+
+  .review-card span {
+    font-weight: bold;
+    color: #5e35b1;
+  }
+
+  form input[type="text"],
+  form input[type="number"] {
+    background-color: #fff;
+    padding-left: 10px;
+  }
+
+  .btn.purple {
+    background-color: #5e35b1;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="row" style="margin-top: 20px;">
+  <!-- Left Column: List of Apartments -->
+  <div class="col s3">
+    <h5>Apartments</h5>
+    <ul class="collection">
+      {% if apartments %}
+        {% for apt in apartments %}
+          <li class="collection-item">
+            <a href="{{ url_for('index_views.get_listing_page') }}?apt_id={{ apt.id }}"
+               class="purple-text text-accent-2" style="font-weight: bold;">
+              {{ apt.title }}
+            </a><br>
+            <span class="grey-text">
+              {{ apt.location.street }}, {{ apt.location.city }}, {{ apt.location.state }} {{ apt.location.zip_code }}
+            </span>
+          </li>
+        {% endfor %}
+      {% else %}
+        <li class="collection-item">No apartments found.</li>
+      {% endif %}
+    </ul>
+  </div>
+
+  <!-- Middle Column: Selected Apartment Details -->
+  <div class="col s6">
+    {% if selected_apartment %}
+      <h5>{{ selected_apartment.title }}</h5>
+      <p><strong>Location:</strong>
+        {{ selected_apartment.location.street }},
+        {{ selected_apartment.location.city }},
+        {{ selected_apartment.location.state }}
+        {{ selected_apartment.location.zip_code }}
+      </p>
+      <p>{{ selected_apartment.description }}</p>
+      {% if selected_apartment.image_url %}
+        <img src="{{ selected_apartment.image_url }}" alt="Apartment Image" style="max-width: 100%;">
+      {% endif %}
+    {% else %}
+      <h5>Select an apartment to view details</h5>
+    {% endif %}
+  </div>
+
+  <!-- Right Column: Reviews + Add New Review -->
+  <div class="col s3">
+    <h5>Reviews</h5>
+    {% if selected_apartment and selected_apartment.reviews %}
+      {% for review in selected_apartment.reviews %}
+        <div class="card-panel grey lighten-4" style="margin-bottom: 10px;">
+          <p>{{ review.comment }}</p>
+          <span class="right grey-text">{{ review.rating }}/5</span>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No reviews for this apartment yet.</p>
+    {% endif %}
+
+    {% if selected_apartment %}
+    <form method="POST" action="{{ url_for('user.index_view', apt_id=selected_apartment.id) }}" style="margin-top: 20px;">
+      <div class="input-field">
+        <input type="text" name="comment" placeholder="Enter your review" required>
+      </div>
+      <div class="input-field">
+        <input type="number" name="rating" placeholder="Rating (1-5)" min="1" max="5" required>
+      </div>
+      <button class="btn purple">Add</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+
+{% endblock %}
