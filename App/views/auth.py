@@ -6,7 +6,7 @@ from App.controllers.user import get_all_users
 
 
 from.index import index_views
-from App.models import User
+from App.models import User, Landlord
 from App.database import db
 
 from App.controllers import (
@@ -100,12 +100,27 @@ def logout_action():
     unset_jwt_cookies(response)
     return response
 
-@auth_views.route('/myproperties/<int:id>', methods=['GET'])
+@auth_views.route('/myproperties/<int:landlord_id>')
 @jwt_required()
-def my_properties_page(id):
-    user_id = get_jwt_identity() 
-    user = User.query.get(user_id)   
-    return render_template('myproperties.html', user=user, id=id)
+def my_properties(landlord_id):
+    user_id = get_jwt_identity()  # Get the current user's ID from the JWT
+    if not user_id or user_id != landlord_id:  # Check if the user is authenticated and matches the landlord ID
+        flash("You are not authorized to view this page.")
+        return render_template('myproperties.html', is_authenticated=False, is_landlord=False, current_user=None, properties=[])
+
+    landlord = Landlord.query.get(landlord_id)
+    if not landlord:
+        flash("Landlord not found.")
+        return render_template('myproperties.html', is_authenticated=True, is_landlord=False, current_user=None, properties=[])
+
+    return render_template(
+        'myproperties.html',
+        is_authenticated=True,
+        is_landlord=True,
+        current_user=landlord,
+        properties=landlord.listings  # Access the listings relationship
+    )
+
 
 @auth_views.route('/search', methods=['GET'])
 @jwt_required()
