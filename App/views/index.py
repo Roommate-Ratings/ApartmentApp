@@ -225,17 +225,44 @@ def search_listings():
     
     # Apply filters based on parameters
     if query:
-        # Search in title, description, and location fields
-        listings_query = listings_query.join(Listing.location).filter(
-            db.or_(
-                Listing.title.ilike(f'%{query}%'),
-                Listing.description.ilike(f'%{query}%'),
-                Location.street.ilike(f'%{query}%'),
-                Location.city.ilike(f'%{query}%'),
-                Location.state.ilike(f'%{query}%'),
-                Location.zip_code.ilike(f'%{query}%')
+        # First, see if the query matches any amenity names
+        matching_amenities = Amenities.query.filter(Amenities.name.ilike(f'%{query}%')).all()
+        matching_amenity_ids = [amenity.id for amenity in matching_amenities]
+        
+        if matching_amenity_ids:
+            # If we found matching amenities, find listings with those amenities
+            listings_with_amenities = db.session.query(Listing.id).join(
+                ListingAmenity, ListingAmenity.listing_id == Listing.id
+            ).filter(
+                ListingAmenity.amenity_id.in_(matching_amenity_ids)
+            ).all()
+            
+            listing_ids_with_amenities = [listing_id for (listing_id,) in listings_with_amenities]
+            
+            # Search in title, description, location fields, AND include listings with matching amenities
+            listings_query = listings_query.join(Listing.location).filter(
+                db.or_(
+                    Listing.title.ilike(f'%{query}%'),
+                    Listing.description.ilike(f'%{query}%'),
+                    Location.street.ilike(f'%{query}%'),
+                    Location.city.ilike(f'%{query}%'),
+                    Location.state.ilike(f'%{query}%'),
+                    Location.zip_code.ilike(f'%{query}%'),
+                    Listing.id.in_(listing_ids_with_amenities)
+                )
             )
-        )
+        else:
+            # If no matching amenities, just search in the usual fields
+            listings_query = listings_query.join(Listing.location).filter(
+                db.or_(
+                    Listing.title.ilike(f'%{query}%'),
+                    Listing.description.ilike(f'%{query}%'),
+                    Location.street.ilike(f'%{query}%'),
+                    Location.city.ilike(f'%{query}%'),
+                    Location.state.ilike(f'%{query}%'),
+                    Location.zip_code.ilike(f'%{query}%')
+                )
+            )
     
     # Filter by bedrooms if specified
     if bedrooms:

@@ -14,3 +14,12 @@ class Listing(db.Model):
     
     location = db.relationship('Location', backref='listing', uselist=False, lazy=True)
 
+    def get_average_rating(self):
+        """Calculate the average rating from all reviews for this listing"""
+        reviews = self.reviews
+        if not reviews or reviews.count() == 0:
+            return 3.0  # Default rating if no reviews
+        
+        total = sum(review.rating for review in reviews)
+        return total / reviews.count()
+
