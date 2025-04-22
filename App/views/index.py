@@ -594,3 +594,53 @@ def submit_tenant_review():
         print(f"Error submitting review: {str(e)}")
         flash(f"Error submitting review: {str(e)}")
         return redirect(url_for('index_views.get_listing_page'))
+
+@index_views.route('/delete_property/<int:property_id>', methods=['POST'])
+@jwt_required()
+def delete_property(property_id):
+    # Get the listing from the database
+    listing = Listing.query.get_or_404(property_id)
+    
+    # Check if the current user is the owner of the property
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+    
+    if not user or user.role != 'landlord' or listing.landlord_id != user.id:
+        flash("Unauthorized: You can only delete your own properties")
+        return redirect(url_for('auth_views.my_properties'))
+    
+    try:
+        # Delete all associated rentals first
+        Rental.query.filter_by(listing_id=property_id).delete()
+        
+        # Delete all associated amenities
+        ListingAmenity.query.filter_by(listing_id=property_id).delete()
+        
+        # Delete all associated reviews
+        Review.query.filter_by(listing_id=property_id).delete()
+        
+        # Delete associated location
+        if listing.location:
+            db.session.delete(listing.location)
+        
+        # Delete the property image from the file system if it exists
+        if listing.image_url and 'uploads' in listing.image_url:
+            try:
+                # Extract the filename from the URL
+                image_path = os.path.join('App', 'static', listing.image_url.split('static/')[1])
+                if os.path.exists(image_path):
+                    os.remove(image_path)
+            except Exception as e:
+                print(f"Error removing image file: {e}")
+        
+        # Delete the listing itself
+        db.session.delete(listing)
+        db.session.commit()
+        
+        flash("Property successfully deleted")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error deleting property: {str(e)}")
+        print(f"Exception when deleting property: {str(e)}")
+    
+    return redirect(url_for('auth_views.my_properties'))
