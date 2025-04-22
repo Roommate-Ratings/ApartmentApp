@@ -6,6 +6,7 @@ from App.models.Landlord import Landlord
 from flask import url_for
 from App.models.Amenities import Amenities
 from App.models.ListingAmenity import ListingAmenity
+from App.models.rental import Rental
 import random
 
 
@@ -107,5 +108,15 @@ def initialize():
             db.session.add(listing_amenity)
     
     # Commit all changes to the database
+    db.session.commit()
+    
+    # Create a rental relationship for demo purposes
+    # This allows the tenant 'mike' to leave reviews for apartment1
+    rental = Rental(
+        tenant_id=mike.id,
+        listing_id=apartment1.id
+    )
+    
+    db.session.add(rental)
     db.session.commit()
 

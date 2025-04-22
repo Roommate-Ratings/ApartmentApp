@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block title %}Register Tenant{% endblock %}
+{% block page %}Register Tenant{% endblock %}
+
+{% block styles %}
+<style>
+  .card {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .submit-btn {
+    margin-top: 20px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col s12 m8 offset-m2">
+      <div class="card white">
+        <h4 class="blue-grey-text text-darken-2">Register a Tenant for a Property</h4>
+        <p class="grey-text">Only tenants registered for a property can leave reviews.</p>
+        
+        {% if not properties %}
+        <div class="card-panel yellow lighten-4">
+          <p>You don't have any properties listed yet. <a href="{{ url_for('index_views.add_property_page') }}">Add a property</a> first.</p>
+        </div>
+        {% elif not tenants %}
+        <div class="card-panel yellow lighten-4">
+          <p>There are no tenants registered in the system yet.</p>
+        </div>
+        {% else %}
+        <form method="POST" action="{{ url_for('index_views.register_tenant') }}">
+          <div class="input-field">
+            <select name="listing_id" required title="Select Property">
+              <option value="" disabled selected>Choose a property</option>
+              {% for property in properties %}
+              <option value="{{ property.id }}">{{ property.title }} - {{ property.location.street }}, {{ property.location.city }}</option>
+              {% endfor %}
+            </select>
+            <label>Select Property</label>
+          </div>
+          
+          <div class="input-field">
+            <select name="tenant_id" required title="Select Tenant">
+              <option value="" disabled selected>Choose a tenant</option>
+              {% for tenant in tenants %}
+              <option value="{{ tenant.id }}">{{ tenant.username }} ({{ tenant.email }})</option>
+              {% endfor %}
+            </select>
+            <label>Select Tenant</label>
+          </div>
+          
+          <button type="submit" class="btn blue-grey submit-btn">Register Tenant</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);
+  });
+</script>
+{% endblock %} 
