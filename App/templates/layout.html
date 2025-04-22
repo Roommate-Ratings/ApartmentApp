@@ -38,37 +38,7 @@
         {% endblock %}
     
         <!-- Search bar wrapper with lower z-index -->
-        <div style="position: relative; z-index: 0;">
-          <form action="/search" method="GET" style="
-            position: absolute;
-            left: 50%;
-            transform: translateX(-80%);
-            max-width: 600px;
-            width: 100%;
-            top: 15px;
-            z-index: 0;
-          ">
-            <div class="input-field" style="margin: 0;">
-              <input id="search" type="search" name="query" required placeholder="Search locations, amenities, or features" 
-                    style="
-                      background: #2e4a5f;
-                      border-radius: 25px;
-                      padding-left: 15px;
-                      padding-right: 35px;
-                      height: 40px;
-                      line-height: 40px;
-                      box-shadow: none;
-                      width: 65%;
-                    ">
-              <button type="submit" class="btn-flat" style="position: absolute; right: 170px; top: -10px; padding: 0 10px; height: 40px;">
-                <i class="material-icons white-text">search</i>
-              </button>
-              <a href="/search" class="btn-flat" style="position: absolute; right: 220px; top: -10px; padding: 0 5px; height: 50px;" title="Advanced Search">
-                <i class="material-icons white-text">tune</i>
-              </a>
-            </div>
-          </form>
-        </div>
+        
     
         <!-- Nav links with higher z-index -->
         <ul id="nav-mobile" class="right" style="display: flex; align-items: center; gap: 10px; margin-left: 20px; position: relative; z-index: 1;">
