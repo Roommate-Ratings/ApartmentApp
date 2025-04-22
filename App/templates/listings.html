@@ -230,16 +230,34 @@
       <p>No reviews for this apartment yet.</p>
     {% endif %}
 
+    <!-- Display flash messages in a nice format if any -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="card-panel yellow lighten-4">
+            <p class="amber-text text-darken-4">{{ message }}</p>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
     {% if selected_apartment %}
-    <form method="POST" action="{{ url_for('user.index_view', apt_id=selected_apartment.id) }}" style="margin-top: 20px;">
+    <div class="card-panel blue-grey lighten-5">
+      <p class="grey-text text-darken-2"><i class="material-icons tiny">info</i> Only verified tenants who have rented this apartment can leave reviews.</p>
+    </div>
+    <form id="reviewForm" method="POST" action="{{ url_for('index_views.submit_tenant_review') }}" style="margin-top: 20px;">
+      <input type="hidden" name="apt_id" value="{{ selected_apartment.id }}">
       <div class="input-field">
         <input type="text" name="comment" placeholder="Enter your review" required>
       </div>
       <div class="input-field">
         <input type="number" name="rating" placeholder="Rating (1-5)" min="1" max="5" required>
       </div>
-      <button class="btn blue-grey">Add</button>
+      <button type="submit" class="btn blue-grey">Add Review</button>
     </form>
+
+    <!-- Add JavaScript to debug form submission -->
+
     {% endif %}
   </div>
 </div>

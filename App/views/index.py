@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, send_from_directory, jsonify, redirect, url_for, session, make_response
+from flask import Blueprint, render_template, request, send_from_directory, jsonify, redirect, url_for, session, make_response, flash
 from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
 import os
 from werkzeug.utils import secure_filename
@@ -73,39 +73,68 @@ def add_review(apt_id, comment, rating):
     db.session.commit()
     return True
 
-@index_views.route('/addreview', methods=['POST'])
-@jwt_required()
+@index_views.route('/submit-review', methods=['GET', 'POST'])
 def add_review_page():
-    # Get current user
-    username = get_jwt_identity()
-    user = User.query.filter_by(username=username).first()
-    
-    # Check if user is a tenant
-    if not user or user.role != 'tenant':
-        return "Unauthorized: Only verified tenants can leave reviews", 401
+    # Handle GET requests (in case the form gets submitted accidentally as GET)
+    if request.method == 'GET':
+        return redirect(url_for('index_views.get_listing_page'))
         
-    apt_id = request.form.get('apt_id')
-    comment = request.form.get('comment')
-    rating = request.form.get('rating')
-    
-    # Check if the tenant has rented this apartment
-    rental = Rental.query.filter_by(tenant_id=user.id, listing_id=apt_id).first()
-    
-    if not rental:
-        return "Unauthorized: You can only review apartments you have rented", 401
-    
-    # Use user's actual ID for the review
-    review = Review(
-        listing_id=apt_id,
-        user_id=user.id,
-        rating=int(rating),
-        comment=comment
-    )
-    
-    db.session.add(review)
-    db.session.commit()
-    
-    return redirect(url_for('index_views.get_listing_page', apt_id=apt_id))
+    # For POST requests, continue with processing
+    try:
+        # Verify JWT but make it optional
+        verify_jwt_in_request(optional=True)
+        username = get_jwt_identity()
+        user = User.query.filter_by(username=username).first() if username else None
+        
+        apt_id = request.form.get('apt_id')
+        if not apt_id:
+            flash("Missing apartment ID")
+            return redirect(url_for('index_views.get_listing_page'))
+            
+        # Verify the apartment exists
+        apartment = Listing.query.get(apt_id)
+        if not apartment:
+            flash("Apartment not found")
+            return redirect(url_for('index_views.get_listing_page'))
+        
+        # Check if user is a tenant
+        if not user:
+            flash("Please log in to leave a review")
+            return redirect(url_for('index_views.get_listing_page', apt_id=apt_id))
+            
+        if user.role != 'tenant':
+            flash("Only tenants can leave reviews")
+            return redirect(url_for('index_views.get_listing_page', apt_id=apt_id))
+            
+        comment = request.form.get('comment')
+        rating = request.form.get('rating')
+        
+        # Check if the tenant has rented this apartment
+        rental = Rental.query.filter_by(tenant_id=user.id, listing_id=apt_id).first()
+        
+        # Enforce that only tenants who have rented the apartment can leave reviews
+        if not rental:
+            flash(f"You can only review apartments you have rented.")
+            return redirect(url_for('index_views.get_listing_page', apt_id=apt_id))
+        
+        # Use user's actual ID for the review
+        review = Review(
+            listing_id=apt_id,
+            user_id=user.id,
+            rating=int(rating),
+            comment=comment
+        )
+        
+        db.session.add(review)
+        db.session.commit()
+        
+        flash("Review added successfully")
+        return redirect(url_for('index_views.get_listing_page', apt_id=apt_id))
+    except Exception as e:
+        # Log the error (in a real app, you'd use a proper logger)
+        print(f"Error submitting review: {str(e)}")
+        flash(f"Error submitting review: {str(e)}")
+        return redirect(url_for('index_views.get_listing_page'))
 
 @index_views.route('/addproperty', methods=['GET', 'POST'])
 @jwt_required()
@@ -472,3 +501,96 @@ def register_tenant():
         properties=landlord_properties,
         tenants=tenants
     )
+
+@index_views.route('/debug', methods=['GET'])
+def debug_info():
+    # Get all users and their roles
+    users = User.query.all()
+    user_info = []
+    for user in users:
+        user_info.append({
+            'id': user.id,
+            'username': user.username,
+            'role': user.role
+        })
+    
+    # Get all rental records
+    rentals = Rental.query.all()
+    rental_info = []
+    for rental in rentals:
+        apartment = Listing.query.get(rental.listing_id)
+        tenant = User.query.get(rental.tenant_id)
+        rental_info.append({
+            'tenant_id': rental.tenant_id,
+            'tenant_name': tenant.username if tenant else 'Unknown',
+            'listing_id': rental.listing_id,
+            'apartment_title': apartment.title if apartment else 'Unknown'
+        })
+    
+    return jsonify({
+        'users': user_info,
+        'rentals': rental_info
+    })
+
+@index_views.route('/tenant-review-submission-secure', methods=['GET', 'POST'])
+def submit_tenant_review():
+    # Handle GET requests (in case the form gets submitted accidentally as GET)
+    if request.method == 'GET':
+        return redirect(url_for('index_views.get_listing_page'))
+        
+    # For POST requests, continue with processing
+    try:
+        # Verify JWT but make it optional
+        verify_jwt_in_request(optional=True)
+        username = get_jwt_identity()
+        user = User.query.filter_by(username=username).first() if username else None
+        
+        apt_id = request.form.get('apt_id')
+        if not apt_id:
+            flash("Missing apartment ID")
+            return redirect(url_for('index_views.get_listing_page'))
+            
+        # Verify the apartment exists
+        apartment = Listing.query.get(apt_id)
+        if not apartment:
+            flash("Apartment not found")
+            return redirect(url_for('index_views.get_listing_page'))
+        
+        # Check if user is a tenant
+        if not user:
+            flash("Please log in to leave a review")
+            return redirect(url_for('index_views.get_listing_page', apt_id=apt_id))
+            
+        if user.role != 'tenant':
+            flash("Only tenants can leave reviews")
+            return redirect(url_for('index_views.get_listing_page', apt_id=apt_id))
+            
+        comment = request.form.get('comment')
+        rating = request.form.get('rating')
+        
+        # Check if the tenant has rented this apartment
+        rental = Rental.query.filter_by(tenant_id=user.id, listing_id=apt_id).first()
+        
+        # Enforce that only tenants who have rented the apartment can leave reviews
+        if not rental:
+            flash(f"You can only review apartments you have rented.")
+            return redirect(url_for('index_views.get_listing_page', apt_id=apt_id))
+        
+        # Use user's actual ID for the review
+        review = Review(
+            listing_id=apt_id,
+            user_id=user.id,
+            rating=int(rating),
+            comment=comment
+        )
+        
+        db.session.add(review)
+        db.session.commit()
+        
+        flash("Review added successfully")
+        return redirect(url_for('index_views.get_listing_page', apt_id=apt_id))
+    except Exception as e:
+        # Log the error (in a real app, you'd use a proper logger)
+        print(f"Error submitting review: {str(e)}")
+        flash(f"Error submitting review: {str(e)}")
+        return redirect(url_for('index_views.get_listing_page'))
