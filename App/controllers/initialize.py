@@ -14,7 +14,8 @@ def initialize():
     db.drop_all()
     db.create_all()
 
-    create_user('bob', 'bob@gmail.com', 'bobpass')
+    # Create Bob as a tenant instead of a regular user
+    bob = create_tenant('bob', 'bob@gmail.com', 'bobpass')
 
     # Create a landlord and a tenant
     jill = create_landlord("jill", "jill@gmail.com", "jillpass")
@@ -110,13 +111,20 @@ def initialize():
     # Commit all changes to the database
     db.session.commit()
     
-    # Create a rental relationship for demo purposes
+    # Create rental relationships for demo purposes
     # This allows the tenant 'mike' to leave reviews for apartment1
-    rental = Rental(
+    rental1 = Rental(
         tenant_id=mike.id,
         listing_id=apartment1.id
     )
     
-    db.session.add(rental)
+    # This allows the tenant 'bob' to leave reviews for apartment2 (Arouca Penthouse)
+    rental2 = Rental(
+        tenant_id=bob.id,
+        listing_id=apartment2.id
+    )
+    
+    db.session.add(rental1)
+    db.session.add(rental2)
     db.session.commit()
 
