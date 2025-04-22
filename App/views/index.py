@@ -610,14 +610,14 @@ def delete_property(property_id):
         return redirect(url_for('auth_views.my_properties'))
     
     try:
-        # Delete all associated rentals first
-        Rental.query.filter_by(listing_id=property_id).delete()
-        
-        # Delete all associated amenities
+        # Delete all associated amenities first
         ListingAmenity.query.filter_by(listing_id=property_id).delete()
         
         # Delete all associated reviews
         Review.query.filter_by(listing_id=property_id).delete()
+        
+        # Delete all associated rental records
+        Rental.query.filter_by(listing_id=property_id).delete()
         
         # Delete associated location
         if listing.location:
@@ -641,6 +641,6 @@ def delete_property(property_id):
     except Exception as e:
         db.session.rollback()
         flash(f"Error deleting property: {str(e)}")
-        print(f"Exception when deleting property: {str(e)}")
+        print(f"Error deleting property: {str(e)}")  # Add detailed error logging
     
     return redirect(url_for('auth_views.my_properties'))
