@@ -11,6 +11,7 @@ from App.models import Listing, Landlord, User, Location
 from App.models.review import Review
 from App.models.Amenities import Amenities
 from App.models.ListingAmenity import ListingAmenity
+from App.models.rental import Rental
 
 index_views = Blueprint('index_views', __name__, template_folder='../templates')
 
@@ -86,6 +87,12 @@ def add_review_page():
     apt_id = request.form.get('apt_id')
     comment = request.form.get('comment')
     rating = request.form.get('rating')
+    
+    # Check if the tenant has rented this apartment
+    rental = Rental.query.filter_by(tenant_id=user.id, listing_id=apt_id).first()
+    
+    if not rental:
+        return "Unauthorized: You can only review apartments you have rented", 401
     
     # Use user's actual ID for the review
     review = Review(
@@ -409,4 +416,59 @@ def search_listings():
         max_price=max_price,
         selected_amenities=amenities,
         all_amenities=all_amenities
+    )
+
+@index_views.route('/register_tenant', methods=['GET', 'POST'])
+@jwt_required()
+def register_tenant():
+    # Check if user is a landlord
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+    
+    if not user or user.role != 'landlord':
+        return "Unauthorized: Only landlords can register tenants", 401
+    
+    if request.method == 'POST':
+        tenant_id = request.form.get('tenant_id')
+        listing_id = request.form.get('listing_id')
+        
+        # Check if the listing belongs to this landlord
+        listing = Listing.query.get(listing_id)
+        if not listing or listing.landlord_id != user.id:
+            return "Unauthorized: You can only register tenants for your own properties", 401
+        
+        # Check if the tenant exists and is actually a tenant
+        tenant = User.query.get(tenant_id)
+        if not tenant or tenant.role != 'tenant':
+            return "Error: Invalid tenant selected", 400
+        
+        # Check if a rental already exists
+        existing_rental = Rental.query.filter_by(
+            tenant_id=tenant_id, 
+            listing_id=listing_id,
+            end_date=None  # Active rental
+        ).first()
+        
+        if existing_rental:
+            return "Error: This tenant is already registered for this property", 400
+        
+        # Create a new rental
+        rental = Rental(
+            tenant_id=tenant_id,
+            listing_id=listing_id
+        )
+        
+        db.session.add(rental)
+        db.session.commit()
+        
+        return redirect(url_for('index_views.get_listing_page', apt_id=listing_id))
+    
+    # For GET request, show the registration form
+    landlord_properties = Listing.query.filter_by(landlord_id=user.id).all()
+    tenants = User.query.filter_by(role='tenant').all()
+    
+    return render_template(
+        'register_tenant.html',
+        properties=landlord_properties,
+        tenants=tenants
     )
